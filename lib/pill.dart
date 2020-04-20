@@ -19,7 +19,7 @@ class _PillState extends State<Pill> {
     Color color = _pressed
         ? Colors.grey
         : (widget.isActive ? Colors.white70 : Colors.brown[900]);
-    double size = _pressed ? 32 : (widget.isActive ? 30 : 32);
+    double size = _pressed ? 32 : (widget.isActive ? 30 : 34);
 
     return Container(
         height: 60,

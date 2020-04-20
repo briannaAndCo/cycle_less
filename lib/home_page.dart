@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
         title: Text(widget.title),
       ),
       body: Container(
-          color: Colors.blueGrey[500],
+          color: Colors.blueGrey[700],
           child: PillPackage(totalWeeks: 4, placeboDays: 7)),
     );
   }

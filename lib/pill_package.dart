@@ -19,16 +19,18 @@ class _PillPackageState extends State<PillPackage> {
       // in the middle of the parent.
       child: GridView.count(
           primary: false,
-          padding: const EdgeInsets.fromLTRB(40, 20, 20, 20),
+          padding: const EdgeInsets.all(10),
           crossAxisCount: 7,
           scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
           children: getPills()),
     );
   }
 
   List<Widget> getPills() {
     int partialWeekActivePills = 7 - widget.placeboDays;
-    int activePills = widget.totalWeeks * 7 - widget.placeboDays - partialWeekActivePills;
+    int activePills =
+        widget.totalWeeks * 7 - widget.placeboDays - partialWeekActivePills;
 
     //Because the grid fills from top to bottom, the last active pills
     // must be put before the last active pills if there are any partial week active pills.
