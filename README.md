@@ -4,15 +4,15 @@ Minimal app for birth control reminder written in flutter
 
 ### Pages
 1. Home Page. Current pill package state.
-  i. Protection state icon.
-  ii. Update pill state.
+     * Protection state icon.
+     * Update pill state.
 2. Settings Page. Current settings. 
- i. Pill type settings.
- ii. Alarm settins.
- iii. App color settins.
+    * Pill type settings.
+    * Alarm settings.
+    * App color settings.
 3. Calendar Page. 
-  i. Icons per day.
-  ii. Notes per day.
+    * Icons per day.
+    * Notes per day.
 
 
 ### TODO
