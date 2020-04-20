@@ -22,8 +22,7 @@ class _PillState extends State<Pill> {
     double size = _pressed ? 32 : (widget.isActive ? 30 : 34);
 
     return Container(
-        height: 60,
-        width: 60,
+      //  color: Colors.pink,
         child: new Material(
             type: MaterialType.transparency,
             child: IconButton(

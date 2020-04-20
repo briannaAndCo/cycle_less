@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pill_reminder/settings_page.dart';
 import 'pill_package.dart';
+import 'settings_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -21,10 +23,20 @@ class _HomePageState extends State<HomePage> {
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: Text(widget.title),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.settings),
+                color: Colors.white70,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                  );
+                })
+          ]),
       body: Container(
           color: Colors.blueGrey[700],
           child: PillPackage(totalWeeks: 4, placeboDays: 7)),

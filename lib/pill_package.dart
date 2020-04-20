@@ -19,10 +19,11 @@ class _PillPackageState extends State<PillPackage> {
       // in the middle of the parent.
       child: GridView.count(
           primary: false,
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(20),
           crossAxisCount: 7,
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
+          childAspectRatio: 1.2,
           children: getPills()),
     );
   }
