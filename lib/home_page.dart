@@ -16,7 +16,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  SharedPreferences _preferences;
   bool _loaded = false;
   int _pillPackageWeeks;
   int _placeboDays;
@@ -38,20 +37,23 @@ class _HomePageState extends State<HomePage> {
 
         if (loadedPrefs.hasData) {
           if (!_loaded) {
-            _getPreferences(loadedPrefs.data);
             AppDefaults.hideLoading(context);
             _loaded = true;
           }
 
-          body = Container(child: PillPackage(totalWeeks: _pillPackageWeeks, placeboDays: _placeboDays));
+          _setPreferenceValues(loadedPrefs.data);
+
+          body = Container(
+              child: PillPackage(
+                  totalWeeks: _pillPackageWeeks, placeboDays: _placeboDays));
         } else {
           body = Container();
         }
 
         return Scaffold(
             appBar: AppBar(
-              // Here we take the value from the MyHomePage object that was created by
-              // the App.build method, and use it to set our appbar title.
+                // Here we take the value from the MyHomePage object that was created by
+                // the App.build method, and use it to set our appbar title.
 
                 title: Text(widget.title),
                 actions: <Widget>[
@@ -62,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => SettingsPage()),
-                        );
+                        ).whenComplete(_loadPrefs);
                       })
                 ]),
             body: body);
@@ -70,18 +72,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   Future<SharedPreferences> _loadPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs;
   }
 
-  void _getPreferences(loadedPrefs) {
-    _preferences = loadedPrefs;
+  void _setPreferenceValues(_preferences) {
     _pillPackageWeeks =
-    (_preferences.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 0);
-    _placeboDays =
-    (_preferences.getInt(SettingsConstants.PLACEBO_DAYS) ?? 0);
+        (_preferences.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 0);
+    _placeboDays = (_preferences.getInt(SettingsConstants.PLACEBO_DAYS) ?? 0);
   }
-
 }

@@ -20,11 +20,7 @@ Color getPrimaryTextColor() {
 }
 
 Color getDialogBackgroundColor() {
-  return Colors.black26;
-}
-
-TextStyle getInputTextStyle() {
-  return TextStyle(color: Colors.black);
+  return Colors.black54;
 }
 
 showLoading(context) {

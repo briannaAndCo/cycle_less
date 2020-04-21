@@ -46,8 +46,7 @@ class _NumberPreferenceState extends State<NumberPreference> {
       maxLines: 1,
       keyboardType: TextInputType.number,
       inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
-      controller: numberController,
-      style: AppConstants.getInputTextStyle(),
+      controller: numberController
     );
 
     // set up the buttons

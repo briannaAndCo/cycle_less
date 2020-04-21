@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home_page.dart';
-import 'app_defaults.dart' as AppConstants;
+import 'app_defaults.dart' as AppDefaults;
 
 void main() => runApp(MyApp());
 
@@ -11,17 +11,27 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Pill Reminder',
       theme: ThemeData(
-        primarySwatch: AppConstants.getPrimarySwatchColor(),
-        canvasColor: AppConstants.getCanvasColor(),
-        dialogBackgroundColor: AppConstants.getDialogBackgroundColor(),
-        primaryIconTheme: IconThemeData(color: AppConstants.getIconColor()),
+        primarySwatch: AppDefaults.getPrimarySwatchColor(),
+        canvasColor: AppDefaults.getCanvasColor(),
+        dialogBackgroundColor: AppDefaults.getDialogBackgroundColor(),
+        primaryIconTheme: IconThemeData(color: AppDefaults.getIconColor()),
         primaryTextTheme: TextTheme(
-            title: TextStyle(color: AppConstants.getPrimaryTextColor())),
+            title: TextStyle(color: AppDefaults.getPrimaryTextColor())),
         textTheme: TextTheme(
-          body1: TextStyle(
-              color: AppConstants.getPrimaryTextColor(), fontSize: 18),
-          subhead: TextStyle(color: AppConstants.getPrimaryTextColor()),
+          body1:
+              TextStyle(color: AppDefaults.getPrimaryTextColor(), fontSize: 18),
+          subhead: TextStyle(color: AppDefaults.getPrimaryTextColor()),
         ),
+        dialogTheme: DialogTheme(
+            titleTextStyle: TextStyle(
+                color: AppDefaults.getPrimarySwatchColor(), fontSize: 18)),
+        inputDecorationTheme: InputDecorationTheme(
+            enabledBorder: UnderlineInputBorder(
+                borderSide:
+                    BorderSide(color: AppDefaults.getPrimarySwatchColor())),
+            focusedBorder: UnderlineInputBorder(
+                borderSide:
+                    BorderSide(color: AppDefaults.getPrimarySwatchColor()))),
       ),
       home: HomePage(title: 'Pill Reminder'),
     );
