@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/settings_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'pill_package.dart';
 import 'settings_page.dart';
+import 'app_defaults.dart' as AppDefaults;
+import 'preferences/settings_constants.dart' as SettingsConstants;
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -13,33 +16,72 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  SharedPreferences _preferences;
+  bool _loaded = false;
+  int _pillPackageWeeks;
+  int _placeboDays;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await AppDefaults.showLoading(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.settings),
-                color: Colors.white70,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
-                  );
-                })
-          ]),
-      body: Container(
-          color: Colors.blueGrey[700],
-          child: PillPackage(totalWeeks: 4, placeboDays: 7)),
+    return new FutureBuilder(
+      future: _loadPrefs(),
+      builder: (context, AsyncSnapshot<SharedPreferences> loadedPrefs) {
+        Widget body;
+
+        if (loadedPrefs.hasData) {
+          if (!_loaded) {
+            _getPreferences(loadedPrefs.data);
+            AppDefaults.hideLoading(context);
+            _loaded = true;
+          }
+
+          body = Container(child: PillPackage(totalWeeks: _pillPackageWeeks, placeboDays: _placeboDays));
+        } else {
+          body = Container();
+        }
+
+        return Scaffold(
+            appBar: AppBar(
+              // Here we take the value from the MyHomePage object that was created by
+              // the App.build method, and use it to set our appbar title.
+
+                title: Text(widget.title),
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.settings),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingsPage()),
+                        );
+                      })
+                ]),
+            body: body);
+      },
     );
   }
+
+
+  Future<SharedPreferences> _loadPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs;
+  }
+
+  void _getPreferences(loadedPrefs) {
+    _preferences = loadedPrefs;
+    _pillPackageWeeks =
+    (_preferences.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 0);
+    _placeboDays =
+    (_preferences.getInt(SettingsConstants.PLACEBO_DAYS) ?? 0);
+  }
+
 }
