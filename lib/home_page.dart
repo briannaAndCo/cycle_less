@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
 
   void _setPreferenceValues(_preferences) {
     _pillPackageWeeks =
-        (_preferences.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 0);
-    _placeboDays = (_preferences.getInt(SettingsConstants.PLACEBO_DAYS) ?? 0);
+        (_preferences.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 4);
+    _placeboDays = (_preferences.getInt(SettingsConstants.PLACEBO_DAYS) ?? 7);
   }
 }

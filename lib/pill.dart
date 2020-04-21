@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Pill extends StatefulWidget {
-  Pill({Key key, this.isActive}) : super(key: key);
+  Pill({Key key, this.isActive, this.isPressed}) : super(key: key);
 
   final bool isActive;
+  final bool isPressed;
 
   @override
   _PillState createState() => _PillState();
@@ -11,6 +12,14 @@ class Pill extends StatefulWidget {
 
 class _PillState extends State<Pill> {
   bool _pressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+     _pressed = widget.isPressed;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

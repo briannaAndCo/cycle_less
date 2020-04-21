@@ -23,7 +23,7 @@ class _PillPackageState extends State<PillPackage> {
           crossAxisCount: 7,
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
-          childAspectRatio: 1.2,
+          childAspectRatio: 1,
           children: getPills()),
     );
   }
@@ -38,15 +38,15 @@ class _PillPackageState extends State<PillPackage> {
 
     List<Widget> pills = List<Widget>();
     for (int i = 0; i < activePills; i++) {
-      pills.add(new Pill(isActive: true));
+      pills.add(new Pill(isActive: true, isPressed: false));
     }
 
     for (int i = 0; i < widget.placeboDays; i++) {
-      pills.add(new Pill(isActive: false));
+      pills.add(new Pill(isActive: false, isPressed: false));
     }
 
     for (int i = 0; i < partialWeekActivePills; i++) {
-      pills.add(new Pill(isActive: true));
+      pills.add(new Pill(isActive: true, isPressed: false));
     }
 
     return pills;
