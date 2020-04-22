@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'database_defaults.dart' as DatabaseDefaults;
+import 'data_models/pressed_pill.dart';
 
 class Pill extends StatefulWidget {
-  Pill({Key key, this.isActive, this.isPressed}) : super(key: key);
+  Pill({Key key, this.id, this.day, this.isActive, this.isPressed})
+      : super(key: key);
 
+  final int id;
+  final int day;
   final bool isActive;
   final bool isPressed;
 
@@ -17,7 +22,7 @@ class _PillState extends State<Pill> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-     _pressed = widget.isPressed;
+      _pressed = widget.isPressed;
     });
   }
 
@@ -31,19 +36,37 @@ class _PillState extends State<Pill> {
     double size = _pressed ? 32 : (widget.isActive ? 30 : 34);
 
     return Container(
-      //  color: Colors.pink,
+        //  color: Colors.pink,
         child: new Material(
             type: MaterialType.transparency,
             child: IconButton(
                 icon: Icon(icon),
-                tooltip: 'Tooltip',
+                tooltip: widget.day.toString(),
                 onPressed: () {
                   setState(() {
                     _pressed = !_pressed;
+                    if (_pressed) {
+                      savePress();
+                    } else {
+                      deletePress();
+                    }
                   });
                 },
                 color: color,
                 iconSize: size,
                 splashColor: Colors.black54)));
+  }
+
+  void deletePress() {
+    DatabaseDefaults.deletePressedPill(widget.id);
+  }
+
+  void savePress() {
+    PressedPill pressedPill = PressedPill(
+        id: widget.id,
+        day: widget.day,
+        date: DateTime.now(),
+        active: widget.isActive);
+    DatabaseDefaults.insertPressedPill(pressedPill);
   }
 }

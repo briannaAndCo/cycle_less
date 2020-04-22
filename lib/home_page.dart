@@ -4,7 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'pill_package.dart';
 import 'settings_page.dart';
 import 'app_defaults.dart' as AppDefaults;
-import 'preferences/settings_constants.dart' as SettingsConstants;
+import 'preferences/settings_constants.dart' as SettingsDefaults;
+import 'database_defaults.dart' as DatabaseDefaults;
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    DatabaseDefaults.createDatabase();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await AppDefaults.showLoading(context);
     });
@@ -79,7 +81,7 @@ class _HomePageState extends State<HomePage> {
 
   void _setPreferenceValues(_preferences) {
     _pillPackageWeeks =
-        (_preferences.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 4);
-    _placeboDays = (_preferences.getInt(SettingsConstants.PLACEBO_DAYS) ?? 7);
+        (_preferences.getInt(SettingsDefaults.PILL_PACKAGE_WEEKS) ?? 4);
+    _placeboDays = (_preferences.getInt(SettingsDefaults.PLACEBO_DAYS) ?? 7);
   }
 }
