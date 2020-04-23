@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:pill_reminder/data_models/pressed_pill.dart';
 import 'pill.dart';
 import 'database_defaults.dart' as DatabaseDefaults;
+import 'app_defaults.dart' as AppDefaults;
 
 class PillPackage extends StatefulWidget {
   PillPackage({Key key, this.totalWeeks, this.placeboDays}) : super(key: key);
@@ -14,14 +16,29 @@ class PillPackage extends StatefulWidget {
 }
 
 class _PillPackageState extends State<PillPackage> {
+
+  bool _loaded = false;
+  Map<int, PressedPill> _currentPackage = new Map();
+
+  @override
+  void initState() {
+    super.initState();
+    _showLoadingDialog();
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return new FutureBuilder(
         future: _loadPressedPills(),
         builder: (context, AsyncSnapshot<List<PressedPill>> pressedPills) {
           Widget body;
 
           if (pressedPills.hasData) {
+            if (_loaded ) {
+              _hideLoadingDialog(context);
+            }
+
             body = GridView.count(
                 primary: false,
                 padding: const EdgeInsets.all(20),
@@ -44,14 +61,12 @@ class _PillPackageState extends State<PillPackage> {
     int partialWeekActivePills = 7 - widget.placeboDays;
     int activePills =
         widget.totalWeeks * 7 - widget.placeboDays - partialWeekActivePills;
-    int day = 7;
-    int column = 1;
-
-
 
     // Because the package is a grid that fills from top to bottom,
     // The first day in the grid is a 7. This is decreased until day 0,
     // then the next columns last day is calculated
+    int day = 7;
+    int column = 1;
     void _calculateDay() {
       day--;
       if (day % 7 == 0) {
@@ -60,35 +75,106 @@ class _PillPackageState extends State<PillPackage> {
       }
     }
 
-    for(PressedPill pill in pressedPills)
-      {
-        print(pill);
-      }
+    _updateCurrentPackage(pressedPills);
 
     //Because the grid fills from top to bottom, the last active pills
     // must be put before the last active pills if there are any partial week active pills.
     List<Widget> pills = List<Widget>();
-    for (int i = 0; i < activePills; i++) {
-      pills.add(new Pill(id: null, day: day, isActive: true, isPressed: false));
 
+    for (int i = 0; i < activePills; i++) {
+      pills.add(_createPill(day, true));
       _calculateDay();
     }
 
     for (int i = 0; i < widget.placeboDays; i++) {
-      pills.add(new Pill(id:null, day: day, isActive: false, isPressed: false));
+      pills.add(_createPill(day, false));
       _calculateDay();
     }
 
     for (int i = 0; i < partialWeekActivePills; i++) {
-      pills.add(new Pill(id: null, day: day, isActive: true, isPressed: false));
+      pills.add(_createPill(day, true));
       _calculateDay();
     }
+
+    _updateLoadingState();
 
     return pills;
   }
 
+  Pill _createPill(int day, bool isActive) {
+    return new Pill(
+        id: _id(day),
+        day: day,
+        isActive: _isActive(isActive, day),
+        isPressed: _isPressed(day),
+        refreshDataCall: _updatePillPackageDatabaseState);
+  }
+
+  void _updateCurrentPackage(pressedPills) {
+    // Calculate the pill states
+    // Get the pressed pills that correspond to the current package.
+    // Since the dates are descending, add all the pills until the first
+    // pill in the package (pill 1) is encountered. After that, all the pill values are old.
+    _currentPackage = new Map();
+
+    for (PressedPill pill in pressedPills) {
+      _currentPackage[pill.day] = pill;
+
+      if (pill.day == 1) {
+        break;
+      }
+    }
+  }
+
+
+  //Utility methods to read out the values for any past pressed pills
+  bool _isPressed(day) {
+    return (_currentPackage.containsKey(day));
+  }
+
+  bool _isActive(defaultVal, day) {
+    if (_currentPackage.containsKey(day)) {
+      return _currentPackage[day].active;
+    }
+    return defaultVal;
+  }
+
+  int _id(day) {
+    if (_currentPackage.containsKey(day)) {
+      return _currentPackage[day].id;
+    }
+    return null;
+  }
+
+  Future _showLoadingDialog() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await AppDefaults.showLoading(context);
+    });
+  }
+
+  Future _hideLoadingDialog(BuildContext context) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await AppDefaults.hideLoading(context);
+    });
+  }
+
+  void _updateLoadingState() {
+    if (!_loaded ) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+          _loaded = true;
+      });
+    }
+  }
+
+  void _updatePillPackageDatabaseState() {
+    setState(() {});
+  }
+
   Future<List<PressedPill>> _loadPressedPills() async {
-    List<PressedPill> pills = await DatabaseDefaults.retrievePressedPills();
+    //Only bother loading the last package worth of pressed pills
+    int maxRetrieve = widget.totalWeeks * 7;
+    List<PressedPill> pills =
+        await DatabaseDefaults.retrievePressedPills(maxRetrieve);
     return pills;
   }
 }

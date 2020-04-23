@@ -44,24 +44,27 @@ Future<void> deletePressedPill(int id) async {
   );
 }
 
-Future<List<PressedPill>> retrievePressedPills() async {
+Future<List<PressedPill>> retrievePressedPills(maxRetrieve) async {
   final Database db = await _retrieveDatabase();
 
   // Query the table for all The Dogs.
-  final List<Map<String, dynamic>> maps = await db.query('pressed_pill', distinct: true, orderBy: 'date');
+  final List<Map<String, dynamic>> maps = await db.query('pressed_pill', distinct: true, orderBy: 'date desc', limit: maxRetrieve );
 
   // Convert the List<Map<String, dynamic> into a List<Dog>.
   return List.generate(maps.length, (i) {
     bool isActive = maps[i]['active'] != 0;
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(maps[i]['date']);
 
     return PressedPill(
       id: maps[i]['id'],
       day: maps[i]['day'],
-      date: maps[i]['datetime(date)'],
+      date: date,
       active: isActive,
     );
   });
 }
+
+
 
 Future<Database> _retrieveDatabase() async {
   final database =

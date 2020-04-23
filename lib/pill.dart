@@ -3,13 +3,20 @@ import 'database_defaults.dart' as DatabaseDefaults;
 import 'data_models/pressed_pill.dart';
 
 class Pill extends StatefulWidget {
-  Pill({Key key, this.id, this.day, this.isActive, this.isPressed})
+  Pill(
+      {Key key,
+      this.id,
+      this.day,
+      this.isActive,
+      this.isPressed,
+      this.refreshDataCall})
       : super(key: key);
 
   final int id;
   final int day;
   final bool isActive;
   final bool isPressed;
+  final Function refreshDataCall;
 
   @override
   _PillState createState() => _PillState();
@@ -59,6 +66,7 @@ class _PillState extends State<Pill> {
 
   void deletePress() {
     DatabaseDefaults.deletePressedPill(widget.id);
+    _updatePillPackageData();
   }
 
   void savePress() {
@@ -68,5 +76,13 @@ class _PillState extends State<Pill> {
         date: DateTime.now(),
         active: widget.isActive);
     DatabaseDefaults.insertPressedPill(pressedPill);
+
+    _updatePillPackageData();
+  }
+
+  void _updatePillPackageData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      widget.refreshDataCall();
+    });
   }
 }

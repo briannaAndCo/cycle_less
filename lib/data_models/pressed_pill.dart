@@ -15,7 +15,7 @@ class PressedPill {
     int isActive = active ? 1 : 0;
     return {
       'id': id,
-      'date': date.toIso8601String(),
+      'date': date.millisecondsSinceEpoch,
       'day': day,
       'active': isActive
     };
@@ -24,7 +24,7 @@ class PressedPill {
   static const String createTableDB = "CREATE TABLE IF NOT EXISTS "
       "pressed_pill("
       "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-      "date TEXT, "
+      "date INTEGER, "
       "day INTEGER, "
       "active INTEGER)";
 }

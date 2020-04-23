@@ -23,21 +23,28 @@ Color getDialogBackgroundColor() {
   return Colors.black54;
 }
 
+LoadingDialog _loadingDialog;
+
 showLoading(context) {
-  // set up the dialog to update the number
-  LoadingDialog alert = LoadingDialog();
-  // show the dialog
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
+  if (_loadingDialog == null) {
+    // set up the dialog to update the number
+    _loadingDialog = LoadingDialog();
+    // show the dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return _loadingDialog;
+      },
+    );
+  }
 }
 
 hideLoading(context) {
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    Navigator.pop(context);
-  });
+  if (_loadingDialog != null) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      Navigator.pop(context);
+    });
+    _loadingDialog = null;
+  }
 }
