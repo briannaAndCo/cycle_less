@@ -23,28 +23,23 @@ Color getDialogBackgroundColor() {
   return Colors.black54;
 }
 
-LoadingDialog _loadingDialog;
+Color getCardColor() {
+  return Colors.black26;
+}
 
-showLoading(context) {
-  if (_loadingDialog == null) {
-    // set up the dialog to update the number
-    _loadingDialog = LoadingDialog();
-    // show the dialog
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return _loadingDialog;
-      },
-    );
-  }
+showLoading(context) async {
+  // show the dialog
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return LoadingDialog();
+    },
+  );
 }
 
 hideLoading(context) {
-  if (_loadingDialog != null) {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      Navigator.pop(context);
-    });
-    _loadingDialog = null;
-  }
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    Navigator.pop(context);
+  });
 }

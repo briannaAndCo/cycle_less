@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 //Import tables
-import 'data_models/pressed_pill.dart';
+import 'pressed_pill.dart';
 
 void createDatabase() async {
   final database = openDatabase(

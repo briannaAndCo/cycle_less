@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:pill_reminder/data_models/pressed_pill.dart';
+import '../data/pressed_pill.dart';
 import 'pill.dart';
-import 'database_defaults.dart' as DatabaseDefaults;
-import 'app_defaults.dart' as AppDefaults;
+import '../data/database_defaults.dart' as DatabaseDefaults;
+import '../app_defaults.dart' as AppDefaults;
 
 class PillPackage extends StatefulWidget {
-  PillPackage({Key key, this.totalWeeks, this.placeboDays}) : super(key: key);
+  PillPackage({Key key, this.pressedPills, this.totalWeeks, this.placeboDays, this.refreshDataCall}) : super(key: key);
 
+  final List<PressedPill> pressedPills;
   final int totalWeeks;
   final int placeboDays;
+  final Function refreshDataCall;
 
   @override
   _PillPackageState createState() => _PillPackageState();
@@ -17,36 +19,23 @@ class PillPackage extends StatefulWidget {
 
 class _PillPackageState extends State<PillPackage> {
 
-  bool _loaded = false;
   Map<int, PressedPill> _currentPackage = new Map();
-
-  @override
-  void initState() {
-    super.initState();
-    _showLoadingDialog();
-  }
 
   @override
   Widget build(BuildContext context) {
 
-    return new FutureBuilder(
-        future: _loadPressedPills(),
-        builder: (context, AsyncSnapshot<List<PressedPill>> pressedPills) {
           Widget body;
 
-          if (pressedPills.hasData) {
-            if (_loaded ) {
-              _hideLoadingDialog(context);
-            }
+          if (widget.pressedPills != null) {
 
             body = GridView.count(
                 primary: false,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
                 crossAxisCount: 7,
                 scrollDirection: Axis.horizontal,
                 shrinkWrap: true,
                 childAspectRatio: 1,
-                children: getPills(pressedPills.data));
+                children: getPills(widget.pressedPills));
           } else {
             body = Container();
           }
@@ -54,7 +43,6 @@ class _PillPackageState extends State<PillPackage> {
           return Center(
             child: body,
           );
-        });
   }
 
   List<Widget> getPills(pressedPills) {
@@ -96,8 +84,6 @@ class _PillPackageState extends State<PillPackage> {
       _calculateDay();
     }
 
-    _updateLoadingState();
-
     return pills;
   }
 
@@ -107,7 +93,7 @@ class _PillPackageState extends State<PillPackage> {
         day: day,
         isActive: _isActive(isActive, day),
         isPressed: _isPressed(day),
-        refreshDataCall: _updatePillPackageDatabaseState);
+        refreshDataCall: widget.refreshDataCall);
   }
 
   void _updateCurrentPackage(pressedPills) {
@@ -144,30 +130,6 @@ class _PillPackageState extends State<PillPackage> {
       return _currentPackage[day].id;
     }
     return null;
-  }
-
-  Future _showLoadingDialog() async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await AppDefaults.showLoading(context);
-    });
-  }
-
-  Future _hideLoadingDialog(BuildContext context) async {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await AppDefaults.hideLoading(context);
-    });
-  }
-
-  void _updateLoadingState() {
-    if (!_loaded ) {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-          _loaded = true;
-      });
-    }
-  }
-
-  void _updatePillPackageDatabaseState() {
-    setState(() {});
   }
 
   Future<List<PressedPill>> _loadPressedPills() async {

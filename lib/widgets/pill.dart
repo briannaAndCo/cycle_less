@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'database_defaults.dart' as DatabaseDefaults;
-import 'data_models/pressed_pill.dart';
+import '../data/database_defaults.dart' as DatabaseDefaults;
+import '../data/pressed_pill.dart';
 
 class Pill extends StatefulWidget {
   Pill(

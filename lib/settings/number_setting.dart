@@ -3,8 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import '../app_defaults.dart' as AppConstants;
 
-class NumberPreference extends StatefulWidget {
-  NumberPreference(
+class NumberSetting extends StatefulWidget {
+  NumberSetting(
       {Key key, this.displayName, this.initialValue, this.storageName})
       : super(key: key);
 
@@ -13,11 +13,11 @@ class NumberPreference extends StatefulWidget {
   final String storageName;
 
   @override
-  _NumberPreferenceState createState() => _NumberPreferenceState();
+  _NumberSettingState createState() => _NumberSettingState();
 }
 
-class _NumberPreferenceState extends State<NumberPreference> {
-  _NumberPreferenceState();
+class _NumberSettingState extends State<NumberSetting> {
+  _NumberSettingState();
 
   int _currentValue;
 

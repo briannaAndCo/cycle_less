@@ -14,13 +14,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: AppDefaults.getPrimarySwatchColor(),
         canvasColor: AppDefaults.getCanvasColor(),
         dialogBackgroundColor: AppDefaults.getDialogBackgroundColor(),
+        cardColor: AppDefaults.getCardColor(),
         primaryIconTheme: IconThemeData(color: AppDefaults.getIconColor()),
         primaryTextTheme: TextTheme(
             title: TextStyle(color: AppDefaults.getPrimaryTextColor())),
         textTheme: TextTheme(
-          body1:
-              TextStyle(color: AppDefaults.getPrimaryTextColor(), fontSize: 18),
-          subhead: TextStyle(color: AppDefaults.getPrimaryTextColor()),
+          body1: TextStyle(color: AppDefaults.getPrimaryTextColor(), fontSize: 18),
+          caption: TextStyle(color: AppDefaults.getPrimaryTextColor(),),
+          subhead: TextStyle(color: AppDefaults.getPrimaryTextColor(), fontSize: 18),
         ),
         dialogTheme: DialogTheme(
             titleTextStyle: TextStyle(

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:pill_reminder/settings_page.dart';
+import 'package:pill_reminder/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'pill_package.dart';
-import 'settings_page.dart';
+import 'widgets/pill_package.dart';
+import 'widgets/protection.dart';
+import 'settings/settings_page.dart';
 import 'app_defaults.dart' as AppDefaults;
-import 'preferences/settings_constants.dart' as SettingsDefaults;
-import 'database_defaults.dart' as DatabaseDefaults;
+import 'settings/settings_constants.dart' as SettingsDefaults;
+import 'data/database_defaults.dart' as DatabaseDefaults;
+import 'data/pressed_pill.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -17,7 +19,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _loaded = false;
+  List<PressedPill> _pressedPills;
+  bool _loadedData = false;
   int _pillPackageWeeks;
   int _placeboDays;
 
@@ -33,21 +36,36 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
-      future: _loadPrefs(),
-      builder: (context, AsyncSnapshot<SharedPreferences> loadedPrefs) {
+      future: _loadData(),
+      builder: (context, AsyncSnapshot<bool> loadedData) {
         Widget body;
 
-        if (loadedPrefs.hasData) {
-          if (!_loaded) {
+        if (loadedData.hasData) {
+          if (!_loadedData) {
             AppDefaults.hideLoading(context);
-            _loaded = true;
+            _loadedData = true;
           }
 
-          _setPreferenceValues(loadedPrefs.data);
-
           body = Container(
+              child: Column(children: [
+            Expanded(
               child: PillPackage(
-                  totalWeeks: _pillPackageWeeks, placeboDays: _placeboDays));
+                pressedPills: _pressedPills,
+                totalWeeks: _pillPackageWeeks,
+                placeboDays: _placeboDays,
+                refreshDataCall: _updateData,
+              ),
+            ),
+            SizedBox(height: 20),
+            Protection(
+              pressedPills: _pressedPills,
+              totalWeeks: _pillPackageWeeks,
+              placeboDays: _placeboDays,
+              isMiniPill: false,
+              refreshDataCall: _updateData,
+            ),
+            SizedBox(height: 10),
+          ]));
         } else {
           body = Container();
         }
@@ -66,7 +84,7 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => SettingsPage()),
-                        ).whenComplete(_loadPrefs);
+                        ).whenComplete(_updateData);
                       })
                 ]),
             body: body);
@@ -74,12 +92,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<SharedPreferences> _loadPrefs() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs;
+  _updateData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {});
+    });
   }
 
-  void _setPreferenceValues(_preferences) {
+  Future<bool> _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _setSettingsValues(prefs);
+    //Only bother loading the last package worth of pressed pills
+    int maxRetrieve = _pillPackageWeeks * 7;
+    _pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
+    return true;
+  }
+
+  void _setSettingsValues(_preferences) {
     _pillPackageWeeks =
         (_preferences.getInt(SettingsDefaults.PILL_PACKAGE_WEEKS) ?? 4);
     _placeboDays = (_preferences.getInt(SettingsDefaults.PLACEBO_DAYS) ?? 7);

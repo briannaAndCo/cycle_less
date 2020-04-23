@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'preferences/number_preference.dart';
-import 'preferences/settings_constants.dart' as SettingsConstants;
-import 'app_defaults.dart' as AppDefaults;
+import 'number_setting.dart';
+import 'settings_constants.dart' as SettingsConstants;
+import '../app_defaults.dart' as AppDefaults;
 import 'dart:developer' as developer;
 
 class SettingsPage extends StatefulWidget {
@@ -42,11 +42,11 @@ class _SettingsPageState extends State<SettingsPage> {
             }
             body = ListView(
               children: <Widget>[
-                NumberPreference(
+                NumberSetting(
                     displayName: "Pill Weeks",
                     initialValue: _pillPackageWeeks,
                     storageName: SettingsConstants.PILL_PACKAGE_WEEKS),
-                NumberPreference(
+                NumberSetting(
                     displayName: "Placebo Days",
                     initialValue: _placeboDays,
                     storageName: SettingsConstants.PLACEBO_DAYS)
