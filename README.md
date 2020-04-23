@@ -22,11 +22,21 @@ Minimal app for birth control reminder written in flutter
   - [x] pill state
 - [x] link settings page
 - [ ] link calendar page
+- [x] create pill_pressed type to store past pill data
+- [x] setup SQLite DB and CRUD
+  - [x] set up pill press to insert data row
+  - [x] set up pill unpress to delete data row
+  - [x] read in past data and update pill package state on initalization
+  - [x] update pill package state from DB when pill row changes (insert/delete)
 
+- [ ] main page
+  - [x] read in weeks and placebo days to create pill package
+  - [x] update pill package on return from settings page
 
 - [ ] settings page
-  - [ ] number of weeks
-  - [ ] number of placebo days
+  - [x] persist data
+  - [x] number of weeks
+  - [x] number of placebo days
   - [ ] type of pill phase (mono, tri) and days per each
   - [ ] time window to take
   - [ ] continuous usage
