@@ -62,7 +62,6 @@ class _HomePageState extends State<HomePage> {
               totalWeeks: _pillPackageWeeks,
               placeboDays: _placeboDays,
               isMiniPill: false,
-              refreshDataCall: _updateData,
             ),
             SizedBox(height: 10),
           ]));
