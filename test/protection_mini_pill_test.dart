@@ -6,20 +6,8 @@ import 'package:pill_reminder/widgets/protection.dart';
 
 void main() {
 
-  testWidgets('State should be protected for a valid week of pills', (WidgetTester tester) async {
-    await tester.pumpWidget( Directionality(
-        textDirection: TextDirection.ltr,
-        child: Protection(
-        pressedPills: getValidWeekPills(),
-        totalWeeks: 4,
-        placeboDays: 7,
-        isMiniPill: false)));
-    final protectionFinder = find.text('Protected');
 
-    expect(protectionFinder, findsOneWidget);
-  });
-
-  testWidgets('State should be protected for two days of  mini pills', (WidgetTester tester) async {
+  testWidgets('State should be protected for 2 days of mini pills', (WidgetTester tester) async {
     await tester.pumpWidget( Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
@@ -32,7 +20,7 @@ void main() {
     expect(protectionFinder, findsOneWidget);
   });
 
-  testWidgets('State should be unprotected for 1 days of  mini pills', (WidgetTester tester) async {
+  testWidgets('State should be unprotected for 1 days of mini pills', (WidgetTester tester) async {
     await tester.pumpWidget( Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
@@ -44,20 +32,19 @@ void main() {
 
     expect(protectionFinder, findsOneWidget);
   });
-}
 
-List<PressedPill> getValidWeekPills() {
-  List<PressedPill> list = new List();
+  testWidgets('State should be unprotected for 2 days with invalid times of mini pills', (WidgetTester tester) async {
+    await tester.pumpWidget( Directionality(
+        textDirection: TextDirection.ltr,
+        child: Protection(
+            pressedPills: getInvalidTimeMiniPills(),
+            totalWeeks: 4,
+            placeboDays: 0,
+            isMiniPill: true)));
+    final protectionFinder = find.text('Unprotected');
 
-  DateTime date = DateTime.now();
-  Random generator = Random();
-  for (int i = 7; i >=1; i-- ) {
-    list.add(PressedPill(id: null, day: i, date: date, active: true));
-
-    date = date.subtract(Duration(days: 1, hours: generator.nextInt(11)));
-  }
-
-  return list;
+    expect(protectionFinder, findsOneWidget);
+  });
 }
 
 List<PressedPill> getValidMiniPills() {
@@ -83,6 +70,20 @@ List<PressedPill> getInvalidAmountMiniPills() {
     list.add(PressedPill(id: null, day: i, date: date, active: true));
 
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(2)));
+  }
+
+  return list;
+}
+
+List<PressedPill> getInvalidTimeMiniPills() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now();
+  Random generator = Random();
+  for (int i = 2; i >=1; i-- ) {
+    list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+    date = date.subtract(Duration(days: 1, hours: 4));
   }
 
   return list;

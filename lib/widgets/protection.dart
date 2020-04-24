@@ -10,6 +10,13 @@ const double MINI_TIME_WINDOW = 27.0;
 const int COMBO_EFFECTIVE_DAYS = 7;
 const int MINI_EFFECTIVE_DAYS = 2;
 
+//The max number of late pills that can be taken in a pack.
+const int MAX_LATE_PILLS = 2;
+
+//If the pill package is extended (i.e, totalWeeks > 4, use this instead of the
+// total weeks, since for protection, only the last 4 weeks count).
+const int COMBO_STANDARD_PILL_PACKAGE = 4;
+
 class Protection extends StatefulWidget {
   Protection(
       {Key key,
@@ -64,7 +71,10 @@ class _ProtectionState extends State<Protection> {
   }
 
   ProtectionState getProtectionState() {
-    int totalPackageDays = widget.totalWeeks * 7;
+    var effectivePackageWeeks = widget.totalWeeks > COMBO_STANDARD_PILL_PACKAGE
+        ? COMBO_STANDARD_PILL_PACKAGE
+        : widget.totalWeeks;
+    int totalPackageDays = effectivePackageWeeks * 7;
     int totalActiveDays = totalPackageDays - widget.placeboDays;
 
     // If the pressed pills have not been loaded or there are no pressed pills
@@ -119,38 +129,48 @@ class _ProtectionState extends State<Protection> {
       int daysToCheck, int totalActiveDays, double timeWindow) {
     int activePillCount = 0;
     int validTimeSpan = 0;
-    int activeTimeSpan = totalActiveDays -1;
+    int activeTimeSpan = totalActiveDays - 1;
 
+    bool lastActive = false;
     DateTime lastDate;
-    DateTime currentDate;
     int count = 0;
     for (PressedPill pill in widget.pressedPills) {
-      currentDate = pill.date;
       if (count > daysToCheck) {
         break;
       }
       //Count the first pill
-      if (pill.active && lastDate == null) {
-          activePillCount++;
-      }
-      else if (pill.active && lastDate != null) {
+      if (pill.active) {
         activePillCount++;
-
-        if (_isValidPill(currentDate, lastDate, timeWindow)) {
-          validTimeSpan++;
-        }
+      }
+      //Else check if the valid time span between active pills is valid
+      if (lastDate != null &&
+          lastActive &&
+          _isValidPill(pill.date, lastDate, timeWindow)) {
+        validTimeSpan++;
       }
 
-      lastDate = currentDate;
+      lastDate = pill.date;
+      lastActive = pill.active;
       count++;
     }
 
-    if (activePillCount >= totalActiveDays &&
-        validTimeSpan >= activeTimeSpan ) {
+    if (activePillCount >= totalActiveDays && validTimeSpan >= activeTimeSpan) {
       return ProtectionState.protected;
-    } else if (activePillCount >= totalActiveDays &&
-        validTimeSpan < activeTimeSpan) {
-      return ProtectionState.compromised;
+      //Compromised state is not valid for mini pill
+      //The pill is considered compromised if all pills have been taken but
+      // all the pills were not valid time spans and the invalid time spans are
+      // less than 3 for the full pack
+    } else if (!widget.isMiniPill &&
+        activePillCount >= totalActiveDays &&
+        validTimeSpan < activeTimeSpan &&
+        (activeTimeSpan - validTimeSpan <= MAX_LATE_PILLS)) {
+      // Protection is compromised only if the last pill taken was active since
+      // there is still time to correct it.If the last pill was a placebo,
+      // then the state is unprotected.
+      if (widget.pressedPills.length > 0 && widget.pressedPills[0].active) {
+        return ProtectionState.compromised;
+      }
+      return ProtectionState.unprotected;
     }
     return ProtectionState.unprotected;
   }
@@ -158,10 +178,11 @@ class _ProtectionState extends State<Protection> {
   bool _isValidPill(DateTime currentDate, DateTime lastDate, double hours) =>
       _getHoursDifference(currentDate, lastDate) < hours;
 
-  double _getHoursDifference(DateTime newDate, DateTime oldDate) {
-    return (newDate.day - oldDate.day) * 24 +
-        (newDate.hour - oldDate.hour) +
-        (newDate.minute - oldDate.minute) / 60;
+  double _getHoursDifference(DateTime currentDate, DateTime lastDate) {
+    double hours = (lastDate.day - currentDate.day) * 24 +
+        (lastDate.hour - currentDate.hour) +
+        (lastDate.minute - currentDate.minute) / 60;
+    return hours;
   }
 
   String _getReasonString(ProtectionState protectionState) {
