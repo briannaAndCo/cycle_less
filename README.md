@@ -16,9 +16,6 @@ Minimal app for birth control reminder written in flutter
 
 
 ### TODO
-
--[x] calculation for protection state for combo or mini pill
-
 - [x] pill visualization
   - [x] pill type
   - [x] pill state
