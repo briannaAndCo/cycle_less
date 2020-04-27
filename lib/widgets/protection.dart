@@ -112,10 +112,9 @@ class _ProtectionState extends State<Protection> {
         return ProtectionState.unprotected;
       }
       // If the next is active and more time than the time window has elapsed
-      // the default state is unprotected.
-      if (isNextActive &&
-          _getHoursDifference(now, lastPillTime) > COMBO_TIME_WINDOW) {
-        return ProtectionState.unprotected;
+      // then check the last package window to find the protection state
+      if (_getHoursDifference(now, lastPillTime) > COMBO_TIME_WINDOW) {
+        return _checkDays(totalPackageDays, totalActiveDays, COMBO_TIME_WINDOW);
       }
 
       //If the next pill is not active, check all days retrieved
@@ -142,10 +141,10 @@ class _ProtectionState extends State<Protection> {
   }
 
   ProtectionState _checkDays(
-      int daysToCheck, int totalActiveDays, int timeWindow) {
+      int daysToCheck, int expectedActiveDays, int timeWindow) {
     int activePillCount = 0;
     int validTimeSpan = 0;
-    int activeTimeSpan = totalActiveDays - 1;
+    int activeTimeSpan = expectedActiveDays - 1;
 
     bool lastActive = false;
     DateTime lastDate;
@@ -172,10 +171,9 @@ class _ProtectionState extends State<Protection> {
 
     int latePills = activeTimeSpan - validTimeSpan;
     bool lastWasActive = widget.pressedPills[0].active;
-    int lastDay = widget.pressedPills[0].day;
 
     //Check for the protected state. Only perfect use is protected.
-    if (activePillCount == totalActiveDays && latePills <= 0) {
+    if (activePillCount >= expectedActiveDays && latePills <= 0) {
       return ProtectionState.protected;
     }
     //If the pill is a mini pill, then the state is unprotected.
@@ -184,19 +182,19 @@ class _ProtectionState extends State<Protection> {
     }
     //Check for late pills.
     // If the pill is in week 1 and has any late pills the state is unprotected
-    if (lastDay <= COMBO_EFFECTIVE_PILLS && latePills > 0) {
+    if (activePillCount <= COMBO_EFFECTIVE_PILLS && latePills > 0) {
       return ProtectionState.unprotected;
     }
     // If the pill is in week 2 and has 1 max missed time the state is compromised
     else if (lastWasActive &&
-        activePillCount == totalActiveDays &&
-        (lastDay < COMBO_EFFECTIVE_PILLS + WEEK_DAY_COUNT) &&
+        activePillCount >= expectedActiveDays &&
+        (activePillCount < COMBO_EFFECTIVE_PILLS + WEEK_DAY_COUNT) &&
         latePills <= 1) {
       return ProtectionState.compromised;
     }
     // If the pill is in week 3 or 4 and has 2 max missed time the state is compromised
     else if (lastWasActive &&
-        activePillCount == totalActiveDays &&
+        activePillCount >= expectedActiveDays &&
         latePills <= 2) {
       return ProtectionState.compromised;
     }

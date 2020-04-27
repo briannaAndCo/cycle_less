@@ -7,6 +7,99 @@ import 'package:pill_reminder/widgets/protection.dart';
 void main() {
 
   testWidgets(
+      'State should be protected since 21 pills have been taken; in day 5 of break from pills',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(Directionality(
+            textDirection: TextDirection.ltr,
+            child: Protection(
+                pressedPills: _getValidContinuousUse21of28OnBreak(),
+                totalWeeks: 4,
+                placeboDays: 7,
+                isMiniPill: false)));
+        final protectionFinder = find.text('Protected');
+
+        expect(protectionFinder, findsOneWidget);
+      });
+
+
+  testWidgets(
+      'State should be unprotected since the last pill taken was 48 hours earlier; in active pills',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(Directionality(
+            textDirection: TextDirection.ltr,
+            child: Protection(
+                pressedPills: _getInvalidTimeElapsedValid21of28InActive(),
+                totalWeeks: 4,
+                placeboDays: 7,
+                isMiniPill: false)));
+        final protectionFinder = find.text('Unprotected');
+
+        expect(protectionFinder, findsOneWidget);
+      });
+
+  testWidgets(
+      'State should be unprotected since there is 3 late pills in 17 days; in active pills',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(Directionality(
+            textDirection: TextDirection.ltr,
+            child: Protection(
+                pressedPills: _getInvalidPills3Time21of28InActive(),
+                totalWeeks: 4,
+                placeboDays: 7,
+                isMiniPill: false)));
+        final protectionFinder = find.text('Unprotected');
+
+        expect(protectionFinder, findsOneWidget);
+      });
+
+  testWidgets(
+      'State should be compromised since there is 2 late pills in 23 days; in active pills',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(Directionality(
+            textDirection: TextDirection.ltr,
+            child: Protection(
+                pressedPills: _getCompromisedPills2Time24of28InActive(),
+                totalWeeks: 4,
+                placeboDays: 4,
+                isMiniPill: false)));
+        final protectionFinder = find.text('Compromised');
+
+        expect(protectionFinder, findsOneWidget);
+      });
+
+
+  testWidgets(
+      'State should be compromised since there is 2 late pills in 17 days; in active pills',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(Directionality(
+            textDirection: TextDirection.ltr,
+            child: Protection(
+                pressedPills: _getCompromisedPills2Time21of28InActive(),
+                totalWeeks: 4,
+                placeboDays: 7,
+                isMiniPill: false)));
+        final protectionFinder = find.text('Compromised');
+
+        expect(protectionFinder, findsOneWidget);
+      });
+
+
+  testWidgets(
+      'State should be compromised since there is 1 late pill in 9 days; in active pills',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(Directionality(
+            textDirection: TextDirection.ltr,
+            child: Protection(
+                pressedPills: _getCompromisedPills1Time21of28InActive(),
+                totalWeeks: 4,
+                placeboDays: 7,
+                isMiniPill: false)));
+        final protectionFinder = find.text('Compromised');
+
+        expect(protectionFinder, findsOneWidget);
+      });
+
+  testWidgets(
       'State should be compromised since there are 2 late pills in the 21 days; currently starting placebo',
           (WidgetTester tester) async {
         await tester.pumpWidget(Directionality(
@@ -465,6 +558,133 @@ List<PressedPill> _getInvalidLate21of28InActive() {
   Random generator = Random();
   for (int i = 8; i >= 1; i--) {
     list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+    date = date.subtract(Duration(days: 1, hours: 14));
+  }
+
+  return list;
+}
+
+List<PressedPill> _getCompromisedPills1Time21of28InActive() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now();
+  Random generator = Random();
+  for (int i = 9; i >= 1; i--) {
+    list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+    int hour = generator.nextInt(12);
+    //Create 2 days with bad timing. This should make the protection compromised
+    if (i == 2) {
+      hour = 15;
+    }
+
+    date = date.subtract(Duration(days: 1, hours: hour));
+  }
+
+  return list;
+}
+
+  List<PressedPill> _getCompromisedPills2Time21of28InActive() {
+    List<PressedPill> list = new List();
+
+    DateTime date = DateTime.now();
+    Random generator = Random();
+    for (int i = 17; i >= 1; i--) {
+
+      list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+      int hour = generator.nextInt(12);
+      //Create 2 days with bad timing. This should make the protection compromised
+      if (i == 2  || i == 15) {
+        hour = 15;
+      }
+
+      date = date.subtract(Duration(days: 1, hours: hour));
+    }
+
+  return list;
+}
+
+List<PressedPill> _getCompromisedPills2Time24of28InActive() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now();
+  Random generator = Random();
+  for (int i = 23; i >= 1; i--) {
+
+    list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+    int hour = generator.nextInt(12);
+    //Create 2 days with bad timing. This should make the protection compromised
+    if (i == 15  || i == 22) {
+      hour = 15;
+    }
+
+    date = date.subtract(Duration(days: 1, hours: hour));
+  }
+
+  return list;
+}
+
+List<PressedPill> _getInvalidPills3Time21of28InActive() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now();
+  Random generator = Random();
+  for (int i = 17; i >= 1; i--) {
+
+    list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+    int hour = generator.nextInt(12);
+    //Create 2 days with bad timing. This should make the protection compromised
+    if (i == 2  || i == 15 || i== 17) {
+      hour = 15;
+    }
+
+    date = date.subtract(Duration(days: 1, hours: hour));
+  }
+
+  return list;
+}
+
+List<PressedPill> _getInvalidTimeElapsedValid21of28InActive() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now().subtract(Duration(days: 2));
+  Random generator = Random();
+  for (int i = 8; i >= 1; i--) {
+    list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+    date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
+  }
+
+  return list;
+}
+
+
+// Create a list of pressed pills where a break is taken in the middle of the
+// pack but 21 valid pills have been taken
+List<PressedPill> _getValidContinuousUse21of28OnBreak() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now().subtract(Duration(days: 5));
+  Random generator = Random();
+  bool active = true;
+  int day = 14;
+  for (int i = 28; i >= 1; i--) {
+
+    if (i <= 28 && i >= 1) {
+      day--;
+    }
+    if (i == 0) {
+      day = 28;
+    }
+    if (i < 0) {
+      day--;
+    }
+
+    list.add(PressedPill(id: null, day: day, date: date, active: active));
 
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
