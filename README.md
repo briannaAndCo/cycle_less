@@ -17,6 +17,8 @@ Minimal app for birth control reminder written in flutter
 
 ### TODO
 
+-[x] calculation for protection state for combo or mini pill
+
 - [x] pill visualization
   - [x] pill type
   - [x] pill state
@@ -39,7 +41,6 @@ Minimal app for birth control reminder written in flutter
   - [x] number of placebo days
   - [x] mini pill specific setting
   - [ ] type of pill phase (mono, tri) and days per each
-  - [ ] time window to take
   - [ ] continuous usage
   - [ ] alarm time
   - [ ] number of alarms
@@ -57,7 +58,7 @@ Minimal app for birth control reminder written in flutter
   
 - [ ] ability to start new pack
 - [ ] ability to take break with no placebos
-- [ ] signal for protected or not
-  - [ ] calculation for protection
+- [x] signal for protected or not
+  - [x] calculation for protection
   - [ ] ui for protection
-  - [ ] update UI when data changes
+  - [x] update UI when data changes
