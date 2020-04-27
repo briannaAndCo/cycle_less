@@ -112,6 +112,21 @@ void main() {
   });
 
   testWidgets(
+      'State should be unprotected since it the last pill is over the time limit',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(Directionality(
+            textDirection: TextDirection.ltr,
+            child: Protection(
+                pressedPills: _getInvalidLate21of28InActive(),
+                totalWeeks: 4,
+                placeboDays: 4,
+                isMiniPill: false)));
+        final protectionFinder = find.text('Unprotected');
+
+        expect(protectionFinder, findsOneWidget);
+      });
+
+  testWidgets(
       'State should be protected with 21 pills out of 24 required; currently in active',
       (WidgetTester tester) async {
     await tester.pumpWidget(Directionality(
@@ -206,7 +221,7 @@ List<PressedPill> _getValid21of28InActive() {
 
   DateTime date = DateTime.now();
   Random generator = Random();
-  for (int i = 7; i >= 1; i--) {
+  for (int i = 8; i >= 1; i--) {
     list.add(PressedPill(id: null, day: i, date: date, active: true));
 
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
@@ -329,7 +344,7 @@ List<PressedPill> _getInvalidTime21of28InActive() {
 
   DateTime date = DateTime.now();
   Random generator = Random();
-  for (int i = 7; i >= 1; i--) {
+  for (int i = 8; i >= 1; i--) {
     list.add(PressedPill(id: null, day: i, date: date, active: true));
 
     date = date.subtract(Duration(days: 1, hours: 14));
@@ -438,6 +453,20 @@ List<PressedPill> _getLatePillsTime21of28InPlacebo() {
     }
 
     date = date.subtract(Duration(days: 1, hours: hour));
+  }
+
+  return list;
+}
+
+List<PressedPill> _getInvalidLate21of28InActive() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now().subtract(Duration(days:2));
+  Random generator = Random();
+  for (int i = 8; i >= 1; i--) {
+    list.add(PressedPill(id: null, day: i, date: date, active: true));
+
+    date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
   return list;

@@ -3,19 +3,21 @@ import '../data/pressed_pill.dart';
 
 enum ProtectionState { protected, compromised, unprotected }
 //24 hours + 12 hour window
-const double COMBO_TIME_WINDOW = 36.0;
+const int COMBO_TIME_WINDOW = 36;
 //24 hours + 3 hour window
-const double MINI_TIME_WINDOW = 27.0;
-//Days to become effective
-const int COMBO_EFFECTIVE_DAYS = 7;
-const int MINI_EFFECTIVE_DAYS = 2;
+const int MINI_TIME_WINDOW = 27;
+//Pills taken to become effective
+const int COMBO_EFFECTIVE_PILLS = 8;
+const int MINI_EFFECTIVE_PILLS = 3;
 
-//The max number of late pills that can be taken in a pack.
-const int MAX_LATE_PILLS = 2;
+//The max number of late pills that can be taken in a combo pack.
+const int COMBO_MAX_LATE_PILLS = 2;
 
 //If the pill package is extended (i.e, totalWeeks > 4, use this instead of the
 // total weeks, since for protection, only the last 4 weeks count).
 const int COMBO_STANDARD_PILL_PACKAGE = 4;
+
+const int WEEK_DAY_COUNT = 7;
 
 class Protection extends StatefulWidget {
   Protection(
@@ -71,6 +73,8 @@ class _ProtectionState extends State<Protection> {
   }
 
   ProtectionState getProtectionState() {
+    // Only the last four weeks count if the pill is an extended cycle
+    // with more than four weeks.
     var effectivePackageWeeks = widget.totalWeeks > COMBO_STANDARD_PILL_PACKAGE
         ? COMBO_STANDARD_PILL_PACKAGE
         : widget.totalWeeks;
@@ -93,17 +97,20 @@ class _ProtectionState extends State<Protection> {
     bool isNextActive = day < totalActiveDays;
 
     if (widget.isMiniPill) {
-      //All mini pills are active, so just check if more time than the
-      // window has elapsed
-      if (_getHoursDifference(now, lastPillTime) > MINI_TIME_WINDOW) {
+      // If not enough mini pills have been taken or the time window is passed
+      // the state is unprotected.
+      if (day < MINI_EFFECTIVE_PILLS ||
+          _getHoursDifference(now, lastPillTime) > MINI_TIME_WINDOW) {
         return ProtectionState.unprotected;
       }
 
-      //If the next pill is not active, check all days retrieved
-      // (i.e. last package). Only the total active days must be effective
       return _checkDays(
-          MINI_EFFECTIVE_DAYS, MINI_EFFECTIVE_DAYS, MINI_TIME_WINDOW);
+          MINI_EFFECTIVE_PILLS, MINI_EFFECTIVE_PILLS, MINI_TIME_WINDOW);
     } else {
+      //If less than the effective pills have been taken, the state is unprotected.
+      if (day < COMBO_EFFECTIVE_PILLS) {
+        return ProtectionState.unprotected;
+      }
       // If the next is active and more time than the time window has elapsed
       // the default state is unprotected.
       if (isNextActive &&
@@ -112,21 +119,30 @@ class _ProtectionState extends State<Protection> {
       }
 
       //If the next pill is not active, check all days retrieved
-      // (i.e. last package). Only the total active days must be effective
+      // (i.e. last package).
       if (!isNextActive) {
         return _checkDays(totalPackageDays, totalActiveDays, COMBO_TIME_WINDOW);
       }
-      // Else if the next pill is active, check only the number of days
-      // required to be effective. All the checked pills must be effective
+      // Else if the next pill is active, check as many pills as have been
+      // taken from the pack.
       else {
-        return _checkDays(
-            COMBO_EFFECTIVE_DAYS, COMBO_EFFECTIVE_DAYS, COMBO_TIME_WINDOW);
+        //Normalize for an extended cycle pill. This is the possible day active day count.
+        int possibleTotalActiveDays =
+            widget.totalWeeks * 7 - widget.placeboDays;
+
+        //Find the difference between the possible and normalized active days.
+        //This will be zero if the pill is not extended cycle.
+        int difference = possibleTotalActiveDays - totalActiveDays;
+
+        int daysToCheck = widget.pressedPills[0].day - difference;
+
+        return _checkDays(daysToCheck, daysToCheck, COMBO_TIME_WINDOW);
       }
     }
   }
 
   ProtectionState _checkDays(
-      int daysToCheck, int totalActiveDays, double timeWindow) {
+      int daysToCheck, int totalActiveDays, int timeWindow) {
     int activePillCount = 0;
     int validTimeSpan = 0;
     int activeTimeSpan = totalActiveDays - 1;
@@ -154,35 +170,44 @@ class _ProtectionState extends State<Protection> {
       count++;
     }
 
-    if (activePillCount >= totalActiveDays && validTimeSpan >= activeTimeSpan) {
+    int latePills = activeTimeSpan - validTimeSpan;
+    bool lastWasActive = widget.pressedPills[0].active;
+    int lastDay = widget.pressedPills[0].day;
+
+    //Check for the protected state. Only perfect use is protected.
+    if (activePillCount == totalActiveDays && latePills <= 0) {
       return ProtectionState.protected;
-      //Compromised state is not valid for mini pill
-      //The pill is considered compromised if all pills have been taken but
-      // all the pills were not valid time spans and the invalid time spans are
-      // less than 3 for the full pack
-    } else if (!widget.isMiniPill &&
-        activePillCount >= totalActiveDays &&
-        validTimeSpan < activeTimeSpan &&
-        (activeTimeSpan - validTimeSpan <= MAX_LATE_PILLS)) {
-      // Protection is compromised only if the last pill taken was active since
-      // there is still time to correct it.If the last pill was a placebo,
-      // then the state is unprotected.
-      if (widget.pressedPills.length > 0 && widget.pressedPills[0].active) {
-        return ProtectionState.compromised;
-      }
+    }
+    //If the pill is a mini pill, then the state is unprotected.
+    else if (widget.isMiniPill) {
       return ProtectionState.unprotected;
+    }
+    //Check for late pills.
+    // If the pill is in week 1 and has any late pills the state is unprotected
+    if (lastDay <= COMBO_EFFECTIVE_PILLS && latePills > 0) {
+      return ProtectionState.unprotected;
+    }
+    // If the pill is in week 2 and has 1 max missed time the state is compromised
+    else if (lastWasActive &&
+        activePillCount == totalActiveDays &&
+        (lastDay < COMBO_EFFECTIVE_PILLS + WEEK_DAY_COUNT) &&
+        latePills <= 1) {
+      return ProtectionState.compromised;
+    }
+    // If the pill is in week 3 or 4 and has 2 max missed time the state is compromised
+    else if (lastWasActive &&
+        activePillCount == totalActiveDays &&
+        latePills <= 2) {
+      return ProtectionState.compromised;
     }
     return ProtectionState.unprotected;
   }
 
-  bool _isValidPill(DateTime currentDate, DateTime lastDate, double hours) =>
-      _getHoursDifference(currentDate, lastDate) < hours;
+  bool _isValidPill(DateTime currentDate, DateTime lastDate, int hours) =>
+      _getHoursDifference(currentDate, lastDate) <= hours;
 
-  double _getHoursDifference(DateTime currentDate, DateTime lastDate) {
-    double hours = (lastDate.day - currentDate.day) * 24 +
-        (lastDate.hour - currentDate.hour) +
-        (lastDate.minute - currentDate.minute) / 60;
-    return hours;
+  int _getHoursDifference(DateTime currentDate, DateTime lastDate) {
+    return lastDate.difference(currentDate).inHours.abs();
   }
 
   String _getReasonString(ProtectionState protectionState) {
