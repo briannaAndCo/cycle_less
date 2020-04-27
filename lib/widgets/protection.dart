@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/pressed_pill.dart';
+import 'package:number_to_words_spelling/number_to_words_spelling.dart';
 
 enum ProtectionState { protected, compromised, unprotected }
 //24 hours + 12 hour window
@@ -225,20 +226,20 @@ class _ProtectionState extends State<Protection> {
             //Calculate the days that can be taken off.
             int daysOff = widget.placeboDays -
                 _getLastActiveDate().difference(DateTime.now()).inDays.abs();
-
+            String daysLeft = NumberWordsSpelling.toWord(daysOff.toString(),'en_US');
             if (daysOff == widget.placeboDays) {
               return "A " +
-                  daysOff.toString() +
+                  daysLeft +
                   " day break from active pills may be taken any time.";
             }
             if (daysOff > 1) {
               return "There are " +
-                  daysOff.toString() +
+                  daysLeft +
                   " days protected remaining.";
             }
             if (daysOff == 1) {
               return "There is " +
-                  daysOff.toString() +
+                  daysLeft+
                   " day protected remaining.";
             }
             if (daysOff <= 0) {

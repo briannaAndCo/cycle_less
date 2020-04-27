@@ -17,7 +17,7 @@ void main() {
             isMiniPill: false)));
     final protectionFinder = find.text('Protected');
     final reasonFinder =
-        find.text('A 7 day break from active pills may be taken any time.');
+        find.text('A seven day break from active pills may be taken any time.');
 
     expect(protectionFinder, findsOneWidget);
     expect(reasonFinder, findsOneWidget);
@@ -52,7 +52,7 @@ void main() {
             placeboDays: 7,
             isMiniPill: false)));
     final protectionFinder = find.text('Protected');
-    final reasonFinder = find.text('There are 2 days protected remaining.');
+    final reasonFinder = find.text('There are two days protected remaining.');
 
     expect(protectionFinder, findsOneWidget);
     expect(reasonFinder, findsOneWidget);
@@ -282,7 +282,7 @@ void main() {
             isMiniPill: false)));
     final protectionFinder = find.text('Protected');
     final reasonFinder =
-        find.text('A 7 day break from active pills may be taken any time.');
+        find.text('A seven day break from active pills may be taken any time.');
 
     expect(protectionFinder, findsOneWidget);
     expect(reasonFinder, findsOneWidget);
@@ -299,7 +299,7 @@ void main() {
             placeboDays: 4,
             isMiniPill: false)));
     final protectionFinder = find.text('Protected');
-    final reasonFinder = find.text("There is 1 day protected remaining.");
+    final reasonFinder = find.text("There is one day protected remaining.");
 
     expect(protectionFinder, findsOneWidget);
     expect(reasonFinder, findsOneWidget);
