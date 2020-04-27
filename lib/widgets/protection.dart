@@ -75,9 +75,7 @@ class _ProtectionState extends State<Protection> {
   ProtectionState getProtectionState() {
     // Only the last four weeks count if the pill is an extended cycle
     // with more than four weeks.
-    var effectivePackageWeeks = widget.totalWeeks > COMBO_STANDARD_PILL_PACKAGE
-        ? COMBO_STANDARD_PILL_PACKAGE
-        : widget.totalWeeks;
+    var effectivePackageWeeks = _getEffectivePackageWeeks();
     int totalPackageDays = effectivePackageWeeks * 7;
     int totalActiveDays = totalPackageDays - widget.placeboDays;
 
@@ -138,6 +136,12 @@ class _ProtectionState extends State<Protection> {
         return _checkDays(daysToCheck, daysToCheck, COMBO_TIME_WINDOW);
       }
     }
+  }
+
+  int _getEffectivePackageWeeks() {
+    return widget.totalWeeks > COMBO_STANDARD_PILL_PACKAGE
+        ? COMBO_STANDARD_PILL_PACKAGE
+        : widget.totalWeeks;
   }
 
   ProtectionState _checkDays(
@@ -211,10 +215,41 @@ class _ProtectionState extends State<Protection> {
   String _getReasonString(ProtectionState protectionState) {
     switch (protectionState) {
       case ProtectionState.protected:
-        return "All pills have been taken correctly.";
+        if (widget.isMiniPill) {
+          return "All pills have been taken correctly.";
+        } else {
+          int maxRequiredPills =
+              _getEffectivePackageWeeks() * 7 - widget.placeboDays;
+          if (_getCurrentActivePillCount(COMBO_TIME_WINDOW) >=
+              maxRequiredPills) {
+            //Calculate the days that can be taken off.
+            int daysOff = widget.placeboDays -
+                _getLastActiveDate().difference(DateTime.now()).inDays.abs();
+
+            if (daysOff == widget.placeboDays) {
+              return "A " +
+                  daysOff.toString() +
+                  " day break from active pills may be taken any time.";
+            }
+            if (daysOff > 1) {
+              return "There are " +
+                  daysOff.toString() +
+                  " days protected remaining.";
+            }
+            if (daysOff == 1) {
+              return "There is " +
+                  daysOff.toString() +
+                  " day protected remaining.";
+            }
+            if (daysOff <= 0) {
+              return "To maintain protection, resume active pills.";
+            }
+          }
+          return "All pills have been taken correctly.";
+        }
         break;
       case ProtectionState.compromised:
-        return "To many pills have been taken late or missed.\n"
+        return "Too many pills have been taken late or missed.\n"
             "Skip the placebo week and "
             "continue the next\npack to remain protected.";
         break;
@@ -239,5 +274,46 @@ class _ProtectionState extends State<Protection> {
         break;
     }
     return "Unknown";
+  }
+
+  DateTime _getLastActiveDate() {
+    for (PressedPill pill in widget.pressedPills) {
+      if (pill.active) {
+        return pill.date;
+      }
+    }
+  }
+
+  int _getCurrentActivePillCount(int hourWindow) {
+    int activePillCount = 0;
+
+    bool foundFirstActive = false;
+    DateTime lastPillTime;
+    for (PressedPill pill in widget.pressedPills) {
+      //Count the active pills
+      if (pill.active &&
+          lastPillTime != null &&
+          _isValidPill(pill.date, lastPillTime, hourWindow)) {
+        // Count the first time this is called twice, since it requires
+        // 2 valid pills the first time and only one additional valid
+        // pills all the next.
+        if (!foundFirstActive) {
+          foundFirstActive = true;
+          activePillCount++;
+        }
+        activePillCount++;
+      }
+      // If we have already found actives and the pill is no longer active,
+      // Or the time elapsed was too great, break.
+      if (foundFirstActive &&
+          (!pill.active ||
+              (lastPillTime != null &&
+                  !_isValidPill(pill.date, lastPillTime, hourWindow)))) {
+        break;
+      }
+      lastPillTime = pill.date;
+    }
+
+    return activePillCount;
   }
 }
