@@ -64,6 +64,14 @@ Future<List<PressedPill>> retrievePressedPills(maxRetrieve) async {
   });
 }
 
+Future<void> deleteAllPressedPills() async {
+  final Database db = await _retrieveDatabase();
+
+  // Remove the Dog from the Database.
+  await db.delete(
+    'pressed_pill'
+  );
+}
 
 
 Future<Database> _retrieveDatabase() async {

@@ -93,7 +93,7 @@ class _HomePageState extends State<HomePage> {
 
   _updateData() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      setState(() {});
+      setState(() {_pressedPills = null; _loadData();});
     });
   }
 
@@ -103,6 +103,10 @@ class _HomePageState extends State<HomePage> {
     //Only bother loading the last package worth of pressed pills
     int maxRetrieve = _pillPackageWeeks * 7;
     _pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
+    for(PressedPill pill in _pressedPills)
+      {
+        print(pill);
+      }
     return true;
   }
 
