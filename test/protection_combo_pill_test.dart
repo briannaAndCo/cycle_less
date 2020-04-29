@@ -119,7 +119,7 @@ void main() {
   });
 
   testWidgets(
-      'State should be compromised since there is 1 late pill in 9 days; in active pills',
+      'State should be protected but not breakable since there is 1 late pill in 9 days; in active pills',
       (WidgetTester tester) async {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
@@ -128,9 +128,11 @@ void main() {
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
-    final protectionFinder = find.text('Compromised');
+    final protectionFinder = find.text('Protected');
+    final reasonFinder = find.text("Continue active pills to maintain protection.");
 
     expect(protectionFinder, findsOneWidget);
+    expect(reasonFinder, findsOneWidget);
   });
 
   testWidgets(
@@ -264,14 +266,14 @@ void main() {
             placeboDays: 4,
             isMiniPill: false)));
     final protectionFinder = find.text('Protected');
-    final reasonFinder = find.text('All pills have been taken correctly.');
+    final reasonFinder = find.text('Continue active pills to maintain protection.');
 
     expect(protectionFinder, findsOneWidget);
     expect(reasonFinder, findsOneWidget);
   });
 
   testWidgets(
-      'State should be protected with 21 valid pills; currently in placebo',
+      '1State should be protected with 21 valid pills; currently in placebo',
       (WidgetTester tester) async {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
@@ -289,7 +291,7 @@ void main() {
   });
 
   testWidgets(
-      'State should be protected with 24 valid pills; currently in placebo',
+      '2State should be protected with 24 valid pills; currently in placebo',
       (WidgetTester tester) async {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
@@ -306,12 +308,12 @@ void main() {
   });
 
   testWidgets(
-      'State should be protected with 21 valid pills; currently in placebo',
+      '3State should be protected with 21 valid pills; currently in placebo',
       (WidgetTester tester) async {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getMiddle21of28InPlacebo(),
+            pressedPills: _get21of28InPlaceboNoMore(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -462,6 +464,26 @@ List<PressedPill> _get24of28InPlacebo() {
   return list;
 }
 
+List<PressedPill> _get21of28InPlaceboNoMore() {
+  List<PressedPill> list = new List();
+
+  DateTime date = DateTime.now();
+  Random generator = Random();
+  bool active = false;
+  for (int i = 28; i >= 1; i--) {
+    //After pill 21 they become active.
+    if (i <= 21) {
+      active = true;
+    }
+
+    list.add(PressedPill(id: null, day: i, date: date, active: active));
+
+    date = date.subtract(Duration(days: 1, hours: 5));
+  }
+
+  return list;
+}
+
 List<PressedPill> _getInvalidAmount21of28InActive() {
   List<PressedPill> list = new List();
 
@@ -521,7 +543,7 @@ List<PressedPill> _getInvalidAmount21of28InPlacebo() {
   DateTime date = DateTime.now();
   Random generator = Random();
   bool active = false;
-  for (int i = 21; i >= 1; i--) {
+  for (int i = 23; i >= 1; i--) {
     //After pill 21 they become active.
     if (i <= 21) {
       active = true;
@@ -558,7 +580,7 @@ List<PressedPill> _getCompromisedTime21of28InPlacebo() {
 
     int hour = generator.nextInt(12);
     //Create 2 days with bad timing. This should make the protection compromised
-    if (i == 2 || i == 12) {
+    if (i == 2 || i == 20) {
       hour = 15;
     }
 
@@ -571,7 +593,7 @@ List<PressedPill> _getCompromisedTime21of28InPlacebo() {
 List<PressedPill> _getLatePillsTime21of28InPlacebo() {
   List<PressedPill> list = new List();
 
-  DateTime date = DateTime.now();
+  DateTime date = DateTime.now().subtract(Duration(hours: 12));
   Random generator = Random();
   bool active = false;
   for (int i = 22; i >= 1; i--) {
@@ -583,7 +605,7 @@ List<PressedPill> _getLatePillsTime21of28InPlacebo() {
     list.add(PressedPill(id: null, day: i, date: date, active: active));
 
     int hour = generator.nextInt(12);
-    //Create 2 days with bad timing. This should make the protection compromised
+    //Create 2 days with bad timing
     if (i == 2 || i == 12) {
       hour = 15;
     }
