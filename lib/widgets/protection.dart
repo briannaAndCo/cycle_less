@@ -27,12 +27,6 @@ class _ProtectionState extends State<Protection> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = new List();
-    print("built");
-    if (widget.pressedPills != null && widget.pressedPills.length > 1) {
-      for (PressedPill pill in widget.pressedPills) {
-        print(pill);
-      }
-    }
 
     if (widget.pressedPills != null) {
       ProtectionStatusInfo info = _getProtectionState();
@@ -377,7 +371,6 @@ class _ProtectionState extends State<Protection> {
         lastActivePill = pill;
       }
     }
-    print(latePillCount);
 
     int weekOneDays = COMBO_EFFECTIVE_PILLS;
     int weekTwoDays = weekOneDays + 7;
