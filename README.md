@@ -25,12 +25,15 @@ Minimal app for birth control reminder written in flutter
 - [x] setup SQLite DB and CRUD
   - [x] set up pill press to insert data row
   - [x] set up pill unpress to delete data row
+  - [ ] set up update pill press to update data row
   - [x] read in past data and update pill package state on initalization
   - [x] update pill package state from DB when pill row changes (insert/delete)
 
 - [ ] main page
   - [x] read in weeks and placebo days to create pill package
   - [x] update pill package on return from settings page
+  - [ ] popup to create pill press - has the ability to set press date/time
+  - [ ] popup to update/delete existing pull press - has the ability to set press date/time
 
 - [ ] settings page
   - [x] persist data
@@ -57,5 +60,5 @@ Minimal app for birth control reminder written in flutter
 - [x] ability to take break with no placebos
 - [x] signal for protected or not
   - [x] calculation for protection
-  - [ ] ui for protection
+  - [x] ui for protection
   - [x] update UI when data changes
