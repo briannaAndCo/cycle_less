@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:number_to_words_spelling/number_to_words_spelling.dart';
 import 'package:sprintf/sprintf.dart';
-
 import '../data/pressed_pill.dart';
 import 'protection_status_info.dart';
 
@@ -383,24 +382,38 @@ class _ProtectionState extends State<Protection> {
   }
 
   bool _isInActiveWindowCombo() {
-    return _getHoursDifference(_getLastActiveDate(), DateTime.now()) <=
+
+    DateTime _lastActiveDate = _getLastActiveDate();
+    if(_lastActiveDate == null)
+      {
+        return false;
+      }
+
+    return _getHoursDifference(_lastActiveDate, DateTime.now()) <=
         COMBO_TIME_WINDOW;
   }
 
   bool _isProtectedCurrentPack() {
+    DateTime _lastActiveDate = _getLastActiveDate();
+    if(_lastActiveDate == null)
+    {
+      return false;
+    }
+
     int perfectUseActives = _countPerfectUseActives(COMBO_TIME_WINDOW, 0);
     DateTime currentTime = DateTime.now();
     return (perfectUseActives >= COMBO_EFFECTIVE_PILLS &&
-            _getHoursDifference(_getLastActiveDate(), currentTime) <=
+            _getHoursDifference(_lastActiveDate, currentTime) <=
                 COMBO_TIME_WINDOW) ||
         perfectUseActives >= _getEffectiveTotalActiveDays() &&
-            _getHoursDifference(_getLastActiveDate(), currentTime) <=
+            _getHoursDifference(_lastActiveDate, currentTime) <=
                 (widget.placeboDays * 24 + COMBO_TIME_WINDOW);
   }
 
   bool _isValidLastPack() {
     int gapDays = _countLastGapDaysBetweenActives();
-    return gapDays <= widget.placeboDays &&
+    int allowedTimeSlipDays = (COMBO_TIME_WINDOW/24).floor();
+    return gapDays <= widget.placeboDays +  allowedTimeSlipDays &&
         _countPreviousPerfectUseActives() >= _getEffectiveTotalActiveDays();
   }
 

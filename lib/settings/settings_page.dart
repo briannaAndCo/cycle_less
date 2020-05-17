@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:pill_reminder/settings/mini_pill_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../app_defaults.dart' as AppDefaults;
 import 'number_setting.dart';
 import 'settings_constants.dart' as SettingsConstants;
-import '../app_defaults.dart' as AppDefaults;
-import 'dart:developer' as developer;
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -18,6 +19,7 @@ class _SettingsPageState extends State<SettingsPage> {
   //preference values to initialize
   int _pillPackageWeeks;
   int _placeboDays;
+  bool _miniPill;
 
   @override
   void initState() {
@@ -39,17 +41,31 @@ class _SettingsPageState extends State<SettingsPage> {
               _setPreferences(loadedPrefs.data);
               AppDefaults.hideLoading(context);
               _loaded = true;
+              print("pill package weeks");
+              print(_pillPackageWeeks);
             }
             body = ListView(
               children: <Widget>[
                 NumberSetting(
-                    displayName: "Pill Weeks",
-                    initialValue: _pillPackageWeeks,
-                    storageName: SettingsConstants.PILL_PACKAGE_WEEKS),
+                  displayName: "Pill Weeks",
+                  initialValue: _pillPackageWeeks,
+                  storageName: SettingsConstants.PILL_PACKAGE_WEEKS,
+                  loadData: _updateData,
+                  enabled: true,
+                ),
                 NumberSetting(
-                    displayName: "Placebo Days",
-                    initialValue: _placeboDays,
-                    storageName: SettingsConstants.PLACEBO_DAYS)
+                  displayName: "Placebo Days",
+                  initialValue: _placeboDays,
+                  storageName: SettingsConstants.PLACEBO_DAYS,
+                  loadData: _updateData,
+                  enabled: !_miniPill,
+                ),
+                MiniPillSetting(
+                  displayName: "Mini Pill",
+                  initialValue: _miniPill,
+                  storageName: SettingsConstants.MINI_PILL,
+                  loadData: _updateData,
+                )
               ],
             );
           } else {
@@ -72,9 +88,26 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _setPreferences(loadedPrefs) {
+    print("got prefs");
+    print(loadedPrefs);
     _sharedPrefs = loadedPrefs;
     _pillPackageWeeks =
-        (_sharedPrefs.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 0);
-    _placeboDays = (_sharedPrefs.getInt(SettingsConstants.PLACEBO_DAYS) ?? 0);
+        (_sharedPrefs.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 4);
+    _placeboDays = (_sharedPrefs.getInt(SettingsConstants.PLACEBO_DAYS) ?? 7);
+    _miniPill = (_sharedPrefs.getBool(SettingsConstants.MINI_PILL) ?? false);
+    print("set prefs");
+  }
+
+  _updateData() {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      setState(() {
+        _loadData();
+      });
+    });
+  }
+
+  Future<void> _loadData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    _setPreferences(prefs);
   }
 }

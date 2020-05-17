@@ -18,9 +18,9 @@ class MyApp extends StatelessWidget {
       {
         for(PressedPill pill in _getValidContinuousUse21of28NoBreakYet())
           {
-            print("Instering pill " + pill.toString());
-            DB.insertPressedPill(pill);
-           // DB.deleteAllPressedPills();
+         //  print("Instering pill " + pill.toString());
+        //   DB.insertPressedPill(pill);
+          //  DB.deleteAllPressedPills();
           }
         first = false;
       }
@@ -60,32 +60,24 @@ class MyApp extends StatelessWidget {
   List<PressedPill> _getValidContinuousUse21of28NoBreakYet() {
     List<PressedPill> list = new List();
 
-    DateTime date = DateTime.now().subtract(Duration(days: 1));
+    DateTime date = DateTime.now();
     Random generator = Random();
     bool active = false;
-    int day = 6;
-    for (int i = 6; i > 1; i--) {
-
-      if (day == 1) {
-        day = 28;
-      }
-      else if (day <= 28 && day > 1) {
-        day--;
-      }
-
+    for (int i = 21; i >= 1; i--) {
       //After pill 21 they become active.
-      if (day <= 21 && day >= 1) {
+      if (i <= 21) {
         active = true;
-      } else {
-        active = false;
       }
 
-      int hours = generator.nextInt(12);
+      list.add(PressedPill(id: null, day: i, date: date, active: active));
 
+      int hour = generator.nextInt(12);
+      //Create 2 days with bad timing. This should make the protection compromised
+      if (i == 2 || i == 20) {
+        hour = 15;
+      }
 
-      list.add(PressedPill(id: null, day: day, date: date, active: active));
-
-      date = date.subtract(Duration(days: 1, hours: hours));
+      date = date.subtract(Duration(days: 1, hours: hour));
     }
 
     return list;

@@ -1,15 +1,13 @@
 import 'dart:async';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-//Import tables
 import 'pressed_pill.dart';
 
 void createDatabase() async {
   final database = openDatabase(
-    // Set the path to the database. Note: Using the `join` function from the
-    // `path` package is best practice to ensure the path is correctly
-    // constructed for each platform.
+    // Set the path to the database.
     join(await getDatabasesPath(), 'pill_reminder_database.db'),
 
     onCreate: (db, version) {
@@ -36,7 +34,7 @@ Future<void> insertPressedPill(PressedPill pill) async {
 Future<void> deletePressedPill(int id) async {
   final Database db = await _retrieveDatabase();
 
-  // Remove the Dog from the Database.
+  // Remove the pressed pill from the database.
   await db.delete(
     'pressed_pill',
     where: "id = ?",
@@ -47,10 +45,10 @@ Future<void> deletePressedPill(int id) async {
 Future<List<PressedPill>> retrievePressedPills(maxRetrieve) async {
   final Database db = await _retrieveDatabase();
 
-  // Query the table for all The Dogs.
-  final List<Map<String, dynamic>> maps = await db.query('pressed_pill', distinct: true, orderBy: 'date desc', limit: maxRetrieve );
+  final List<Map<String, dynamic>> maps = await db.query('pressed_pill',
+      distinct: true, orderBy: 'date desc', limit: maxRetrieve);
 
-  // Convert the List<Map<String, dynamic> into a List<Dog>.
+  // Convert the List<Map<String, dynamic> into a List<PressedPill>.
   return List.generate(maps.length, (i) {
     bool isActive = maps[i]['active'] != 0;
     DateTime date = DateTime.fromMillisecondsSinceEpoch(maps[i]['date']);
@@ -67,12 +65,8 @@ Future<List<PressedPill>> retrievePressedPills(maxRetrieve) async {
 Future<void> deleteAllPressedPills() async {
   final Database db = await _retrieveDatabase();
 
-  // Remove the Dog from the Database.
-  await db.delete(
-    'pressed_pill'
-  );
+  await db.delete('pressed_pill');
 }
-
 
 Future<Database> _retrieveDatabase() async {
   final database =

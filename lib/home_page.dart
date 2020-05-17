@@ -100,12 +100,12 @@ class _HomePageState extends State<HomePage> {
   Future<bool> _loadData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _setSettingsValues(prefs);
-    //Only bother loading the last package worth of pressed pills
-    int maxRetrieve = _pillPackageWeeks * 7;
+    //Only bother loading the 2 last packages since that is the max required to maintain protection
+    int maxRetrieve = _pillPackageWeeks * 7 * 2;
     _pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
     for(PressedPill pill in _pressedPills)
       {
-        print(pill);
+        print("loaded: " + pill.toString());
       }
     return true;
   }
