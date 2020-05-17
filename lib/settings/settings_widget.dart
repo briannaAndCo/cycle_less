@@ -16,8 +16,9 @@ abstract class SettingsWidget extends StatefulWidget {
   final Function loadData;
 }
 
-abstract class SettingsWidgetState<T extends SettingsWidget> extends State<T> {
-  dynamic currentValue;
+abstract class SettingsWidgetState<T extends SettingsWidget, V>
+    extends State<T> {
+  V currentValue;
 
   @override
   void initState() {

@@ -1,6 +1,7 @@
 library app_defaults;
 
 import 'package:flutter/material.dart';
+
 import 'widgets/loading_dialog.dart';
 
 Color getPrimarySwatchColor() {
@@ -25,6 +26,10 @@ Color getDialogBackgroundColor() {
 
 Color getCardColor() {
   return Colors.black26;
+}
+
+double getPrimaryFontSize() {
+  return 18;
 }
 
 showLoading(context) async {

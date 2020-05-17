@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pill_reminder/settings/alarm_setting.dart';
 import 'package:pill_reminder/settings/mini_pill_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,6 +21,7 @@ class _SettingsPageState extends State<SettingsPage> {
   int _pillPackageWeeks;
   int _placeboDays;
   bool _miniPill;
+  TimeOfDay _alarmTime;
 
   @override
   void initState() {
@@ -65,6 +67,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   initialValue: _miniPill,
                   storageName: SettingsConstants.MINI_PILL,
                   loadData: _updateData,
+                ),
+                AlarmSetting(
+                  displayName: "Alarm",
+                  initialValue: _alarmTime,
+                  storageName: "",
+                  loadData: _updateData,
                 )
               ],
             );
@@ -95,6 +103,12 @@ class _SettingsPageState extends State<SettingsPage> {
         (_sharedPrefs.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 4);
     _placeboDays = (_sharedPrefs.getInt(SettingsConstants.PLACEBO_DAYS) ?? 7);
     _miniPill = (_sharedPrefs.getBool(SettingsConstants.MINI_PILL) ?? false);
+    int alarmHours =
+        (_sharedPrefs.getInt(SettingsConstants.HOURS_ALARM_TIME) ?? 12);
+    int alarmMinutes =
+        (_sharedPrefs.getInt(SettingsConstants.MINUTES_ALARM_TIME) ?? 0);
+    _alarmTime = TimeOfDay(hour: alarmHours, minute: alarmMinutes);
+
     print("set prefs");
   }
 

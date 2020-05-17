@@ -16,10 +16,10 @@ class MiniPillSetting extends SettingsWidget {
             loadData: loadData);
 
   @override
-  _MiniPillSettingState createState() => _MiniPillSettingState();
+  SettingsWidgetState createState() => _MiniPillSettingState();
 }
 
-class _MiniPillSettingState extends SettingsWidgetState {
+class _MiniPillSettingState extends SettingsWidgetState<MiniPillSetting, bool> {
   @override
   Widget build(BuildContext context) {
     return SwitchListTile(

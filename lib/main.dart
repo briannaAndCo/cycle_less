@@ -1,29 +1,26 @@
-import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'app_defaults.dart' as AppDefaults;
-import 'package:pill_reminder/data/pressed_pill.dart';
 import 'dart:math';
-import 'package:pill_reminder/data/database_defaults.dart' as DB;
+
+import 'package:flutter/material.dart';
+import 'package:pill_reminder/data/pressed_pill.dart';
+
+import 'app_defaults.dart' as AppDefaults;
+import 'home_page.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-
   bool first = true;
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-    if(first)
-      {
-        for(PressedPill pill in _getValidContinuousUse21of28NoBreakYet())
-          {
-         //  print("Instering pill " + pill.toString());
+    if (first) {
+      for (PressedPill pill in _getValidContinuousUse21of28NoBreakYet()) {
+        //  print("Instering pill " + pill.toString());
         //   DB.insertPressedPill(pill);
-          //  DB.deleteAllPressedPills();
-          }
-        first = false;
+        //  DB.deleteAllPressedPills();
       }
+      first = false;
+    }
 
     return MaterialApp(
       title: 'Pill Reminder',
@@ -36,13 +33,20 @@ class MyApp extends StatelessWidget {
         primaryTextTheme: TextTheme(
             title: TextStyle(color: AppDefaults.getPrimaryTextColor())),
         textTheme: TextTheme(
-          body1: TextStyle(color: AppDefaults.getPrimaryTextColor(), fontSize: 18),
-          caption: TextStyle(color: AppDefaults.getPrimaryTextColor(),),
-          subhead: TextStyle(color: AppDefaults.getPrimaryTextColor(), fontSize: 18),
+          body1: TextStyle(
+              color: AppDefaults.getPrimaryTextColor(),
+              fontSize: AppDefaults.getPrimaryFontSize()),
+          caption: TextStyle(
+            color: AppDefaults.getPrimaryTextColor(),
+          ),
+          subhead: TextStyle(
+              color: AppDefaults.getPrimaryTextColor(),
+              fontSize: AppDefaults.getPrimaryFontSize()),
         ),
         dialogTheme: DialogTheme(
             titleTextStyle: TextStyle(
-                color: AppDefaults.getPrimarySwatchColor(), fontSize: 18)),
+                color: AppDefaults.getPrimarySwatchColor(),
+                fontSize: AppDefaults.getPrimaryFontSize())),
         inputDecorationTheme: InputDecorationTheme(
             enabledBorder: UnderlineInputBorder(
                 borderSide:

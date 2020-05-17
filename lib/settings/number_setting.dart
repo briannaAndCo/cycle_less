@@ -23,7 +23,7 @@ class NumberSetting extends SettingsWidget {
   SettingsWidgetState createState() => _NumberSettingState();
 }
 
-class _NumberSettingState extends SettingsWidgetState<NumberSetting> {
+class _NumberSettingState extends SettingsWidgetState<NumberSetting, int> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
