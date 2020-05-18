@@ -10,6 +10,7 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   bool first = true;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         //   DB.insertPressedPill(pill);
         //  DB.deleteAllPressedPills();
       }
+
       first = false;
     }
 

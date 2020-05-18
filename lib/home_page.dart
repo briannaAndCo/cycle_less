@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'widgets/pill_package.dart';
-import 'widgets/protection.dart';
-import 'settings/settings_page.dart';
+
 import 'app_defaults.dart' as AppDefaults;
-import 'settings/settings_constants.dart' as SettingsDefaults;
 import 'data/database_defaults.dart' as DatabaseDefaults;
 import 'data/pressed_pill.dart';
+import 'settings/settings_constants.dart' as SettingsDefaults;
+import 'settings/settings_page.dart';
+import 'widgets/pill_package.dart';
+import 'widgets/protection.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -23,6 +24,8 @@ class _HomePageState extends State<HomePage> {
   bool _loadedData = false;
   int _pillPackageWeeks;
   int _placeboDays;
+  bool _miniPill;
+  TimeOfDay _alarmTime;
 
   @override
   void initState() {
@@ -93,7 +96,10 @@ class _HomePageState extends State<HomePage> {
 
   _updateData() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      setState(() {_pressedPills = null; _loadData();});
+      setState(() {
+        _pressedPills = null;
+        _loadData();
+      });
     });
   }
 
@@ -103,10 +109,9 @@ class _HomePageState extends State<HomePage> {
     //Only bother loading the 2 last packages since that is the max required to maintain protection
     int maxRetrieve = _pillPackageWeeks * 7 * 2;
     _pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
-    for(PressedPill pill in _pressedPills)
-      {
-        print("loaded: " + pill.toString());
-      }
+    for (PressedPill pill in _pressedPills) {
+      print("loaded: " + pill.toString());
+    }
     return true;
   }
 
@@ -114,5 +119,10 @@ class _HomePageState extends State<HomePage> {
     _pillPackageWeeks =
         (_preferences.getInt(SettingsDefaults.PILL_PACKAGE_WEEKS) ?? 4);
     _placeboDays = (_preferences.getInt(SettingsDefaults.PLACEBO_DAYS) ?? 7);
+    _miniPill = (_preferences.getBool(SettingsDefaults.MINI_PILL) ?? false);
+    int hours = (_preferences.getInt(SettingsDefaults.HOURS_ALARM_TIME) ?? 12);
+    int minutes =
+        (_preferences.getInt(SettingsDefaults.MINUTES_ALARM_TIME) ?? 0);
+    _alarmTime = TimeOfDay(hour: hours, minute: minutes);
   }
 }

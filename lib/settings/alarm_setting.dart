@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:pill_reminder/alarm_notification.dart';
 import 'package:pill_reminder/settings/settings_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -65,6 +66,7 @@ class _AlarmSettingState extends SettingsWidgetState<AlarmSetting, TimeOfDay> {
         currentValue = TimeOfDay.fromDateTime(_dateTime);
       });
       savePreference(currentValue);
+      AlarmNotification.setNotification(currentValue);
       Navigator.of(context).pop();
     };
 
