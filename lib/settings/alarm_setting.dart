@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-import 'package:pill_reminder/alarm_notification.dart';
 import 'package:pill_reminder/settings/settings_widget.dart';
+import 'package:scheduler/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_defaults.dart' as AppDefaults;
@@ -66,7 +66,8 @@ class _AlarmSettingState extends SettingsWidgetState<AlarmSetting, TimeOfDay> {
         currentValue = TimeOfDay.fromDateTime(_dateTime);
       });
       savePreference(currentValue);
-      AlarmNotification.setNotification(currentValue);
+      Scheduler.cancelNotification();
+      Scheduler.scheduleNotification(currentValue, "Pill Reminder", "Take your pill.");
       Navigator.of(context).pop();
     };
 
