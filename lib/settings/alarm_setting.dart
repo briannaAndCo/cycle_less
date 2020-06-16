@@ -69,7 +69,6 @@ class _AlarmSettingState extends SettingsWidgetState<AlarmSetting, TimeOfDay> {
         currentValue = TimeOfDay.fromDateTime(_dateTime);
       });
       savePreference(currentValue);
-      Scheduler.cancelNotification();
       Scheduler.scheduleNotification(currentValue, "Pill Reminder", "Take your pill.");
       Navigator.of(context).pop();
     };

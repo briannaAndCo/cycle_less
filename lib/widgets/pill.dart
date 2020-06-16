@@ -67,7 +67,7 @@ class _PillState extends State<Pill> {
   }
 
   showPressDialog(BuildContext context) {
-    DateTime localDate = _currentDate;
+    DateTime localDateTime = _currentDate ?? DateTime.now();
 
     Widget widget = Container(
       height: MediaQuery.of(context).copyWith().size.height / 4,
@@ -78,9 +78,9 @@ class _PillState extends State<Pill> {
             width: 2,
           )),
           child: CupertinoDatePicker(
-            initialDateTime: _currentDate?? DateTime.now(),
+            initialDateTime: localDateTime,
             onDateTimeChanged: (newDate) {
-              localDate = newDate;
+              localDateTime = newDate;
             },
             use24hFormat: false,
             maximumDate: DateTime.now(),
@@ -91,9 +91,9 @@ class _PillState extends State<Pill> {
 
     // set up the buttons
     Widget _saveOrUpdateButton = FlatButton(
-      child: Text(localDate == null ? "Save" : "Update"),
+      child: Text(_currentDate == null ? "Save" : "Update"),
       onPressed: () {
-        saveOrUpdatePress(localDate);
+        saveOrUpdatePress(localDateTime);
       },
     );
 
@@ -103,11 +103,10 @@ class _PillState extends State<Pill> {
     );
 
     Widget _cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
+        child: Text("Cancel"),
+        onPressed: () {
+          Navigator.of(context).pop();
+        });
 
     // set up the dialog to update the number
     AlertDialog alert = AlertDialog(
@@ -137,7 +136,8 @@ class _PillState extends State<Pill> {
 
     //Reschedule the next notifications, to make sure they aren't missed
     //TODO: Centralize these text strings
-    Scheduler.scheduleNotification(widget.alarmTime, "Pill Reminder", "Take your pill.");
+    Scheduler.scheduleNotification(
+        widget.alarmTime, "Pill Reminder", "Take your pill.");
   }
 
   void saveOrUpdatePress(DateTime dateTime) {
@@ -145,6 +145,7 @@ class _PillState extends State<Pill> {
       _pressed = true;
       _currentDate = dateTime;
     });
+
     PressedPill pressedPill = PressedPill(
         id: widget.id,
         day: widget.day,
@@ -154,14 +155,14 @@ class _PillState extends State<Pill> {
     Navigator.of(context).pop();
     _updatePillPackageData();
 
-    double timeDifference =  convert(TimeOfDay.fromDateTime(dateTime)) - convert(widget.alarmTime);
+    double timeDifference =
+        convert(TimeOfDay.fromDateTime(dateTime)) - convert(widget.alarmTime);
 
     // If this is less than 12 hours ahead or less than .5 hours after,
     // cancel the next scheduled notification.
-    if(timeDifference >= -12 || timeDifference < .5)
-      {
-        Scheduler.cancelNextNotification(widget.alarmTime);
-      }
+    if (timeDifference >= -12 || timeDifference < .5) {
+      Scheduler.cancelNextNotification(widget.alarmTime);
+    }
   }
 
   void _updatePillPackageData() {
@@ -170,5 +171,5 @@ class _PillState extends State<Pill> {
     });
   }
 
-  double convert(TimeOfDay myTime) => myTime.hour + myTime.minute/60.0;
+  double convert(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 }

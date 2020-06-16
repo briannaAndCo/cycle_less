@@ -417,6 +417,6 @@ class _ProtectionState extends State<Protection> {
         _countPreviousPerfectUseActives() >= _getEffectiveTotalActiveDays();
   }
 
-  bool _isValidPill(DateTime currentDate, DateTime lastDate, int hours) =>
+  bool _isValidPill(DateTime currentDate, DateTime lastDate, int hours)  =>
       _getHoursDifference(currentDate, lastDate) <= hours;
 }
