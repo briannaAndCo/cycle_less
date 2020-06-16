@@ -132,12 +132,13 @@ class _PillState extends State<Pill> {
     });
     DatabaseDefaults.deletePressedPill(widget.id);
     Navigator.of(context).pop();
-    _updatePillPackageData();
 
     //Reschedule the next notifications, to make sure they aren't missed
     //TODO: Centralize these text strings
     Scheduler.scheduleNotification(
         widget.alarmTime, "Pill Reminder", "Take your pill.");
+
+    _updatePillPackageData();
   }
 
   void saveOrUpdatePress(DateTime dateTime) {
@@ -153,7 +154,6 @@ class _PillState extends State<Pill> {
         active: widget.isActive);
     DatabaseDefaults.insertOrUpdatePressedPill(pressedPill);
     Navigator.of(context).pop();
-    _updatePillPackageData();
 
     double timeDifference =
         convert(TimeOfDay.fromDateTime(dateTime)) - convert(widget.alarmTime);
@@ -163,6 +163,8 @@ class _PillState extends State<Pill> {
     if (timeDifference >= -12 || timeDifference < .5) {
       Scheduler.cancelNextNotification(widget.alarmTime);
     }
+
+    _updatePillPackageData();
   }
 
   void _updatePillPackageData() {
