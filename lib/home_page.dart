@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
                 pressedPills: _pressedPills,
                 totalWeeks: _pillPackageWeeks,
                 placeboDays: _placeboDays,
+                alarmTime: _alarmTime,
                 refreshDataCall: _updateData,
               ),
             ),
@@ -109,9 +110,6 @@ class _HomePageState extends State<HomePage> {
     //Only bother loading the 2 last packages since that is the max required to maintain protection
     int maxRetrieve = _pillPackageWeeks * 7 * 2;
     _pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
-    for (PressedPill pill in _pressedPills) {
-      print("loaded: " + pill.toString());
-    }
     return true;
   }
 

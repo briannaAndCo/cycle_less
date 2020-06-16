@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/data/pressed_pill.dart';
 import 'package:scheduler/scheduler.dart';
@@ -60,6 +61,9 @@ class MyApp extends StatelessWidget {
             focusedBorder: UnderlineInputBorder(
                 borderSide:
                     BorderSide(color: AppDefaults.getPrimarySwatchColor()))),
+        cupertinoOverrideTheme: CupertinoThemeData(textTheme: CupertinoTextThemeData(dateTimePickerTextStyle:TextStyle(
+            color: AppDefaults.getPrimaryTextColor(),
+            fontSize: AppDefaults.getSecondaryFontSize())))
       ),
       home: HomePage(title: 'Pill Reminder'),
     );

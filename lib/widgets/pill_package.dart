@@ -6,11 +6,12 @@ import '../data/database_defaults.dart' as DatabaseDefaults;
 import '../app_defaults.dart' as AppDefaults;
 
 class PillPackage extends StatefulWidget {
-  PillPackage({Key key, this.pressedPills, this.totalWeeks, this.placeboDays, this.refreshDataCall}) : super(key: key);
+  PillPackage({Key key, this.alarmTime, this.pressedPills, this.totalWeeks, this.placeboDays, this.refreshDataCall}) : super(key: key);
 
   final List<PressedPill> pressedPills;
   final int totalWeeks;
   final int placeboDays;
+  final TimeOfDay alarmTime;
   final Function refreshDataCall;
 
   @override
@@ -91,8 +92,10 @@ class _PillPackageState extends State<PillPackage> {
     return new Pill(
         id: _id(day),
         day: day,
+        date: _date(day),
         isActive: _isActive(isActive, day),
         isPressed: _isPressed(day),
+        alarmTime: widget.alarmTime,
         refreshDataCall: widget.refreshDataCall);
   }
 
@@ -110,6 +113,9 @@ class _PillPackageState extends State<PillPackage> {
         break;
       }
     }
+
+
+
   }
 
 
@@ -128,6 +134,13 @@ class _PillPackageState extends State<PillPackage> {
   int _id(day) {
     if (_currentPackage.containsKey(day)) {
       return _currentPackage[day].id;
+    }
+    return null;
+  }
+
+  DateTime _date(day) {
+    if (_currentPackage.containsKey(day)) {
+      return _currentPackage[day].date;
     }
     return null;
   }

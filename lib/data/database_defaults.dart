@@ -21,7 +21,7 @@ void createDatabase() async {
   );
 }
 
-Future<void> insertPressedPill(PressedPill pill) async {
+Future<void> insertOrUpdatePressedPill(PressedPill pill) async {
   final Database db = await _retrieveDatabase();
 
   await db.insert(

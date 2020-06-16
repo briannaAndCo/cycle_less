@@ -32,6 +32,10 @@ double getPrimaryFontSize() {
   return 18;
 }
 
+double getSecondaryFontSize() {
+  return 14;
+}
+
 showLoading(context) async {
   // show the dialog
   showDialog(

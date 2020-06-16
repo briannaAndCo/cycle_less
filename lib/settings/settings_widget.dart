@@ -44,6 +44,7 @@ abstract class SettingsWidgetState<T extends SettingsWidget, V>
     AlertDialog alert = AlertDialog(
       title: Text("Update " + widget.displayName),
       content: inputWidget,
+      backgroundColor: Colors.black87,
       actions: [_saveButton, _cancelButton],
     );
 
