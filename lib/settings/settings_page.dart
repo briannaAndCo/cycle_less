@@ -46,36 +46,7 @@ class _SettingsPageState extends State<SettingsPage> {
               print("pill package weeks");
               print(_pillPackageWeeks);
             }
-            body = ListView(
-              children: <Widget>[
-                NumberSetting(
-                  displayName: "Pill Weeks",
-                  initialValue: _pillPackageWeeks,
-                  storageName: SettingsConstants.PILL_PACKAGE_WEEKS,
-                  loadData: _updateData,
-                  enabled: true,
-                ),
-                NumberSetting(
-                  displayName: "Placebo Days",
-                  initialValue: _placeboDays,
-                  storageName: SettingsConstants.PLACEBO_DAYS,
-                  loadData: _updateData,
-                  enabled: !_miniPill,
-                ),
-                MiniPillSetting(
-                  displayName: "Mini Pill",
-                  initialValue: _miniPill,
-                  storageName: SettingsConstants.MINI_PILL,
-                  loadData: _updateData,
-                ),
-                AlarmSetting(
-                  displayName: "Alarm",
-                  initialValue: _alarmTime,
-                  storageName: "",
-                  loadData: _updateData,
-                )
-              ],
-            );
+            body = _buildSettingsView();
           } else {
             body = Container();
           }
@@ -90,6 +61,37 @@ class _SettingsPageState extends State<SettingsPage> {
         });
   }
 
+  Widget _buildSettingsView() => ListView(
+        children: <Widget>[
+          NumberSetting(
+            displayName: "Pill Weeks",
+            initialValue: _pillPackageWeeks,
+            storageName: SettingsConstants.PILL_PACKAGE_WEEKS,
+            loadData: _updateData,
+            enabled: true,
+          ),
+          NumberSetting(
+            displayName: "Placebo Days",
+            initialValue: _placeboDays,
+            storageName: SettingsConstants.PLACEBO_DAYS,
+            loadData: _updateData,
+            enabled: !_miniPill,
+          ),
+          MiniPillSetting(
+            displayName: "Mini Pill",
+            initialValue: _miniPill,
+            storageName: SettingsConstants.MINI_PILL,
+            loadData: _updateData,
+          ),
+          AlarmSetting(
+            displayName: "Alarm",
+            initialValue: _alarmTime,
+            storageName: "",
+            loadData: _updateData,
+          )
+        ],
+      );
+
   Future<SharedPreferences> _loadPrefs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs;
@@ -99,14 +101,11 @@ class _SettingsPageState extends State<SettingsPage> {
     print("got prefs");
     print(loadedPrefs);
     _sharedPrefs = loadedPrefs;
-    _pillPackageWeeks =
-        (_sharedPrefs.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 4);
+    _pillPackageWeeks = (_sharedPrefs.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 4);
     _placeboDays = (_sharedPrefs.getInt(SettingsConstants.PLACEBO_DAYS) ?? 7);
     _miniPill = (_sharedPrefs.getBool(SettingsConstants.MINI_PILL) ?? false);
-    int alarmHours =
-        (_sharedPrefs.getInt(SettingsConstants.HOURS_ALARM_TIME) ?? 12);
-    int alarmMinutes =
-        (_sharedPrefs.getInt(SettingsConstants.MINUTES_ALARM_TIME) ?? 0);
+    int alarmHours = (_sharedPrefs.getInt(SettingsConstants.HOURS_ALARM_TIME) ?? 12);
+    int alarmMinutes = (_sharedPrefs.getInt(SettingsConstants.MINUTES_ALARM_TIME) ?? 0);
     _alarmTime = TimeOfDay(hour: alarmHours, minute: alarmMinutes);
 
     print("set prefs");
