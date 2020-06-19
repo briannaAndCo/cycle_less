@@ -21,6 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <receiver android:name="io.flutter.plugins.scheduler.NotificationBroadcastReceiver"
+                  android:enabled="true" android:exported="true"/>
+        <receiver android:name="io.flutter.plugins.scheduler.RebootBroadcastReciever"
+                  android:enabled="true" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

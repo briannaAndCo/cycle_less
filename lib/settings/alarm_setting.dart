@@ -1,7 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-import 'package:pill_reminder/alarm_notification.dart';
 import 'package:pill_reminder/settings/settings_widget.dart';
+import 'package:scheduler/scheduler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app_defaults.dart' as AppDefaults;
@@ -40,18 +40,21 @@ class _AlarmSettingState extends SettingsWidgetState<AlarmSetting, TimeOfDay> {
   _showUpdateDialog(BuildContext context) {
     DateTime _dateTime;
 
-    Widget timePicker = TimePickerSpinner(
-      is24HourMode: false,
-      normalTextStyle: TextStyle(
-          color: AppDefaults.getCanvasColor(),
-          fontSize: AppDefaults.getPrimaryFontSize()),
-      highlightedTextStyle: TextStyle(
-          color: AppDefaults.getPrimaryTextColor(),
-          fontSize: AppDefaults.getPrimaryFontSize()),
-      onTimeChange: (time) {
-        _dateTime = time;
-      },
-    );
+    TimeOfDay timeOfDay = currentValue?? null;
+
+    double width = MediaQuery.of(context).copyWith().size.width;
+    Widget timePicker = Container(
+        width:  width - width/20,
+        height: MediaQuery.of(context).copyWith().size.height/4,
+        child: CupertinoDatePicker(
+          initialDateTime: timeOfDay != null ? DateTime(1969, 1, 1, timeOfDay.hour, timeOfDay.minute) : DateTime.now(),
+          onDateTimeChanged: (time) {
+            _dateTime = time;
+          },
+          use24hFormat: false,
+          minuteInterval: 1,
+          mode: CupertinoDatePickerMode.time,
+        ));
 
     Widget decoratedBox = DecoratedBox(
         child: timePicker,
@@ -66,7 +69,7 @@ class _AlarmSettingState extends SettingsWidgetState<AlarmSetting, TimeOfDay> {
         currentValue = TimeOfDay.fromDateTime(_dateTime);
       });
       savePreference(currentValue);
-      AlarmNotification.setNotification(currentValue);
+      Scheduler.scheduleNotification(currentValue, "Pill Reminder", "Take your pill.");
       Navigator.of(context).pop();
     };
 

@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/data/pressed_pill.dart';
+import 'package:scheduler/scheduler.dart';
 
 import 'app_defaults.dart' as AppDefaults;
 import 'home_page.dart';
@@ -14,6 +16,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+
+    Scheduler.createAndroidChannel("my.pill.reminder", "Pill Reminder", 4);
+
     if (first) {
       for (PressedPill pill in _getValidContinuousUse21of28NoBreakYet()) {
         //  print("Instering pill " + pill.toString());
@@ -56,6 +61,9 @@ class MyApp extends StatelessWidget {
             focusedBorder: UnderlineInputBorder(
                 borderSide:
                     BorderSide(color: AppDefaults.getPrimarySwatchColor()))),
+        cupertinoOverrideTheme: CupertinoThemeData(textTheme: CupertinoTextThemeData(dateTimePickerTextStyle:TextStyle(
+            color: AppDefaults.getPrimaryTextColor(),
+            fontSize: AppDefaults.getSecondaryFontSize())))
       ),
       home: HomePage(title: 'Pill Reminder'),
     );

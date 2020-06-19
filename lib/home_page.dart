@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:pill_reminder/model/new_pack_indicator.dart';
 import 'package:pill_reminder/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,8 +26,9 @@ class _HomePageState extends State<HomePage> {
   bool _loadedData = false;
   int _pillPackageWeeks;
   int _placeboDays;
-  bool _miniPill;
   TimeOfDay _alarmTime;
+
+  final NewPackIndicator newPackIndicator = NewPackIndicator();
 
   @override
   void initState() {
@@ -52,13 +55,15 @@ class _HomePageState extends State<HomePage> {
           body = Container(
               child: Column(children: [
             Expanded(
-              child: PillPackage(
-                pressedPills: _pressedPills,
-                totalWeeks: _pillPackageWeeks,
-                placeboDays: _placeboDays,
-                refreshDataCall: _updateData,
-              ),
-            ),
+              child: Observer(
+              builder: (_) => PillPackage(
+                        pressedPills: _pressedPills,
+                        newPack: newPackIndicator.isNewPack,
+                        totalWeeks: _pillPackageWeeks,
+                        placeboDays: _placeboDays,
+                        alarmTime: _alarmTime,
+                        refreshDataCall: _updateData,
+                      ))),
             SizedBox(height: 20),
             Protection(
               pressedPills: _pressedPills,
@@ -79,6 +84,10 @@ class _HomePageState extends State<HomePage> {
 
                 title: Text(widget.title),
                 actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.add_circle_outline),
+                      onPressed: () {newPackIndicator.setTrue();}
+                  ),
                   IconButton(
                       icon: Icon(Icons.settings),
                       onPressed: () {
@@ -109,9 +118,6 @@ class _HomePageState extends State<HomePage> {
     //Only bother loading the 2 last packages since that is the max required to maintain protection
     int maxRetrieve = _pillPackageWeeks * 7 * 2;
     _pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
-    for (PressedPill pill in _pressedPills) {
-      print("loaded: " + pill.toString());
-    }
     return true;
   }
 
@@ -119,7 +125,6 @@ class _HomePageState extends State<HomePage> {
     _pillPackageWeeks =
         (_preferences.getInt(SettingsDefaults.PILL_PACKAGE_WEEKS) ?? 4);
     _placeboDays = (_preferences.getInt(SettingsDefaults.PLACEBO_DAYS) ?? 7);
-    _miniPill = (_preferences.getBool(SettingsDefaults.MINI_PILL) ?? false);
     int hours = (_preferences.getInt(SettingsDefaults.HOURS_ALARM_TIME) ?? 12);
     int minutes =
         (_preferences.getInt(SettingsDefaults.MINUTES_ALARM_TIME) ?? 0);
