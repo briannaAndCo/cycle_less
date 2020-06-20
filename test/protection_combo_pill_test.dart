@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/data/pressed_pill.dart';
+import 'package:pill_reminder/model/pill_package_model.dart';
 import 'dart:math';
 import 'package:pill_reminder/widgets/protection.dart';
 
@@ -11,7 +12,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getValidContinuousUse21of28NoBreakYet(),
+            pillPackageModel: _getValidContinuousUse21of28NoBreakYet(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -29,7 +30,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getValidContinuousUse21of28OnBreakNoRemaining(),
+            pillPackageModel: _getValidContinuousUse21of28OnBreakNoRemaining(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -47,7 +48,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getValidContinuousUse21of28OnBreak(),
+            pillPackageModel: _getValidContinuousUse21of28OnBreak(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -64,7 +65,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getInvalidTimeElapsedValid21of28InActive(),
+            pillPackageModel: _getInvalidTimeElapsedValid21of28InActive(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -79,7 +80,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getInvalidPills3Time21of28InActive(),
+            pillPackageModel: _getInvalidPills3Time21of28InActive(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -94,7 +95,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getCompromisedPills2Time24of28InActive(),
+            pillPackageModel: _getCompromisedPills2Time24of28InActive(),
             totalWeeks: 4,
             placeboDays: 4,
             isMiniPill: false)));
@@ -109,7 +110,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getCompromisedPills2Time21of28InActive(),
+            pillPackageModel: _getCompromisedPills2Time21of28InActive(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -124,7 +125,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getCompromisedPills1Time21of28InActive(),
+            pillPackageModel: _getCompromisedPills1Time21of28InActive(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -141,7 +142,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getCompromisedTime21of28InPlacebo(),
+            pillPackageModel: _getCompromisedTime21of28InPlacebo(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -156,7 +157,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getLatePillsTime21of28InPlacebo(),
+            pillPackageModel: _getLatePillsTime21of28InPlacebo(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -171,7 +172,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getInvalidAmount21of28InPlacebo(),
+            pillPackageModel: _getInvalidAmount21of28InPlacebo(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -186,7 +187,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getInvalidTime21of28InPlacebo(),
+            pillPackageModel: _getInvalidTime21of28InPlacebo(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -201,7 +202,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getInvalidTime21of28InActive(),
+            pillPackageModel: _getInvalidTime21of28InActive(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -216,7 +217,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getInvalidAmount21of28InActive(),
+            pillPackageModel: _getInvalidAmount21of28InActive(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -231,7 +232,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _get21of28InPlacebo(),
+            pillPackageModel: _get21of28InPlacebo(),
             totalWeeks: 4,
             placeboDays: 4,
             isMiniPill: false)));
@@ -246,7 +247,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getInvalidLate21of28InActive(),
+            pillPackageModel: _getInvalidLate21of28InActive(),
             totalWeeks: 4,
             placeboDays: 4,
             isMiniPill: false)));
@@ -261,7 +262,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _get21of28LastActiveTaken(),
+            pillPackageModel: _get21of28LastActiveTaken(),
             totalWeeks: 4,
             placeboDays: 4,
             isMiniPill: false)));
@@ -278,7 +279,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _get21of28LastActiveTaken(),
+            pillPackageModel: _get21of28LastActiveTaken(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -296,7 +297,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _get24of28InPlacebo(),
+            pillPackageModel: _get24of28InPlacebo(),
             totalWeeks: 4,
             placeboDays: 4,
             isMiniPill: false)));
@@ -313,7 +314,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _get21of28InPlaceboNoMore(),
+            pillPackageModel: _get21of28InPlaceboNoMore(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -331,7 +332,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _get21of28InPlacebo(),
+            pillPackageModel: _get21of28InPlacebo(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -345,7 +346,7 @@ void main() {
     await tester.pumpWidget(Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: _getValid21of28InActive(),
+            pillPackageModel: _getValid21of28InActive(),
             totalWeeks: 4,
             placeboDays: 7,
             isMiniPill: false)));
@@ -355,7 +356,7 @@ void main() {
   });
 }
 
-List<PressedPill> _getValid21of28InActive() {
+PillPackageModel _getValid21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -366,10 +367,12 @@ List<PressedPill> _getValid21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _get21of28InPlacebo() {
+PillPackageModel _get21of28InPlacebo() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -386,12 +389,14 @@ List<PressedPill> _get21of28InPlacebo() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
 // Create a list of pressed pills where there are placebos in the end and
 // the beginning but all actives are correctly taken
-List<PressedPill> _getMiddle21of28InPlacebo() {
+PillPackageModel _getMiddle21of28InPlacebo() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -421,10 +426,12 @@ List<PressedPill> _getMiddle21of28InPlacebo() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _get21of28LastActiveTaken() {
+PillPackageModel _get21of28LastActiveTaken() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -441,10 +448,12 @@ List<PressedPill> _get21of28LastActiveTaken() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _get24of28InPlacebo() {
+PillPackageModel _get24of28InPlacebo() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -461,10 +470,12 @@ List<PressedPill> _get24of28InPlacebo() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _get21of28InPlaceboNoMore() {
+PillPackageModel _get21of28InPlaceboNoMore() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -481,10 +492,12 @@ List<PressedPill> _get21of28InPlaceboNoMore() {
     date = date.subtract(Duration(days: 1, hours: 5));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getInvalidAmount21of28InActive() {
+PillPackageModel _getInvalidAmount21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -495,10 +508,12 @@ List<PressedPill> _getInvalidAmount21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getInvalidTime21of28InActive() {
+PillPackageModel _getInvalidTime21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -508,10 +523,12 @@ List<PressedPill> _getInvalidTime21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: 14));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getInvalidTime21of28InPlacebo() {
+PillPackageModel _getInvalidTime21of28InPlacebo() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -534,10 +551,12 @@ List<PressedPill> _getInvalidTime21of28InPlacebo() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getInvalidAmount21of28InPlacebo() {
+PillPackageModel _getInvalidAmount21of28InPlacebo() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -561,10 +580,12 @@ List<PressedPill> _getInvalidAmount21of28InPlacebo() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getCompromisedTime21of28InPlacebo() {
+PillPackageModel _getCompromisedTime21of28InPlacebo() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -587,10 +608,12 @@ List<PressedPill> _getCompromisedTime21of28InPlacebo() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getLatePillsTime21of28InPlacebo() {
+PillPackageModel _getLatePillsTime21of28InPlacebo() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now().subtract(Duration(hours: 12));
@@ -613,10 +636,12 @@ List<PressedPill> _getLatePillsTime21of28InPlacebo() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getInvalidLate21of28InActive() {
+PillPackageModel _getInvalidLate21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now().subtract(Duration(days: 2));
@@ -626,10 +651,12 @@ List<PressedPill> _getInvalidLate21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: 14));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getCompromisedPills1Time21of28InActive() {
+PillPackageModel _getCompromisedPills1Time21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -646,10 +673,12 @@ List<PressedPill> _getCompromisedPills1Time21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getCompromisedPills2Time21of28InActive() {
+PillPackageModel _getCompromisedPills2Time21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -666,10 +695,12 @@ List<PressedPill> _getCompromisedPills2Time21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getCompromisedPills2Time24of28InActive() {
+PillPackageModel _getCompromisedPills2Time24of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -686,10 +717,12 @@ List<PressedPill> _getCompromisedPills2Time24of28InActive() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getInvalidPills3Time21of28InActive() {
+PillPackageModel _getInvalidPills3Time21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -706,10 +739,12 @@ List<PressedPill> _getInvalidPills3Time21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: hour));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> _getInvalidTimeElapsedValid21of28InActive() {
+PillPackageModel _getInvalidTimeElapsedValid21of28InActive() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now().subtract(Duration(days: 2));
@@ -720,12 +755,14 @@ List<PressedPill> _getInvalidTimeElapsedValid21of28InActive() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
 // Create a list of pressed pills where a break is taken in the middle of the
 // pack but 21 valid pills have been taken
-List<PressedPill> _getValidContinuousUse21of28OnBreak() {
+PillPackageModel _getValidContinuousUse21of28OnBreak() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now().subtract(Duration(days: 5));
@@ -748,12 +785,14 @@ List<PressedPill> _getValidContinuousUse21of28OnBreak() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
 // Create a list of pressed pills where a break is taken in the middle of the
 // pack but 21 valid pills have been taken
-List<PressedPill> _getValidContinuousUse21of28OnBreakNoRemaining() {
+PillPackageModel _getValidContinuousUse21of28OnBreakNoRemaining() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now().subtract(Duration(days: 7));
@@ -776,12 +815,14 @@ List<PressedPill> _getValidContinuousUse21of28OnBreakNoRemaining() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
 // Create a list of pressed pills where 21 valid pills have been taken
 // but no break has been taken.
-List<PressedPill> _getValidContinuousUse21of28NoBreakYet() {
+PillPackageModel _getValidContinuousUse21of28NoBreakYet() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -804,5 +845,7 @@ List<PressedPill> _getValidContinuousUse21of28NoBreakYet() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(12)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }

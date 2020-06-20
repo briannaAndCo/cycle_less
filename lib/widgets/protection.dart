@@ -1,62 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:number_to_words_spelling/number_to_words_spelling.dart';
+import 'package:pill_reminder/model/pill_package_model.dart';
 import 'package:sprintf/sprintf.dart';
 import '../data/pressed_pill.dart';
 import 'protection_status_info.dart';
 
-class Protection extends StatefulWidget {
-  final List<PressedPill> pressedPills;
-
-  final int totalWeeks;
-  final int placeboDays;
-  final bool isMiniPill;
+class Protection extends StatelessWidget {
   Protection(
       {Key key,
-      this.pressedPills,
+      this.pillPackageModel,
       this.totalWeeks,
       this.placeboDays,
       this.isMiniPill})
       : super(key: key);
 
+  final PillPackageModel pillPackageModel;
+  final int totalWeeks;
+  final int placeboDays;
+  final bool isMiniPill;
+
   @override
-  _ProtectionState createState() => _ProtectionState();
-}
+  Widget build(BuildContext context) => Card(
+      child: Observer(
+          builder: (_) => Container(
+              padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+              child: Column(
+                children: pillPackageModel.loadedPills == null
+                    ? _getUnknownState()
+                    : _getCurrentState(),
+              ))));
 
-class _ProtectionState extends State<Protection> {
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = new List();
+  List<Widget> _getCurrentState() {
+    ProtectionStatusInfo info = _getProtectionState();
+    return [
+      Text(
+        _getStateString(info.state),
+        style: _getTextStyle(info.state),
+      ),
+      Text(
+        _getReasonString(info.stateInfo),
+        softWrap: false,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )
+    ];
+  }
 
-    if (widget.pressedPills != null) {
-      ProtectionStatusInfo info = _getProtectionState();
-      children = [
-        Text(
-          _getStateString(info.state),
-          style: _getTextStyle(info.state),
-        ),
-        Text(
-          _getReasonString(info.stateInfo),
-          softWrap: false,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 14),
-        )
-      ];
-    } else {
-      children = [
-        Text("Unknown"),
-        Text(
-          "Could not load past pills.",
-          textAlign: TextAlign.center,
-        ),
-      ];
-    }
-
-    return Card(
-        child: Container(
-            padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-            child: Column(
-              children: children,
-            )));
+  List<Widget> _getUnknownState() {
+    return [
+      Text("Unknown"),
+      Text(
+        "Could not load past pills.",
+        textAlign: TextAlign.center,
+      ),
+    ];
   }
 
   ProtectionStatusInfo _calculateProtectionStatusInfoComboPill() {
@@ -74,7 +72,7 @@ class _ProtectionState extends State<Protection> {
 
   ProtectionStatusInfo _calculateProtectionStatusInfoMiniPill() {
     DateTime now = DateTime.now();
-    DateTime lastPillTime = widget.pressedPills[0].date;
+    DateTime lastPillTime = pillPackageModel.loadedPills[0].date;
 
     //Get the state of the current pills taken to date.
     int currentValidActives = _countPerfectUseActives(MINI_TIME_WINDOW, 0);
@@ -105,7 +103,7 @@ class _ProtectionState extends State<Protection> {
 
   int _countLastGapDaysBetweenActives() {
     PressedPill lastActivePill;
-    for (PressedPill pill in widget.pressedPills) {
+    for (PressedPill pill in pillPackageModel.loadedPills) {
       if (pill.active && lastActivePill != null) {
         if (!_isValidPill(pill.date, lastActivePill.date, COMBO_TIME_WINDOW)) {
           return pill.date.difference(lastActivePill.date).inDays.abs();
@@ -123,11 +121,12 @@ class _ProtectionState extends State<Protection> {
     int activePillCount = 0;
     bool foundFirstActive = false;
     DateTime lastPillTime;
-    for (int i = 0; i < widget.pressedPills.length; i++) {
+
+    for (int i = 0; i < pillPackageModel.loadedPills.length; i++) {
       //Don't bother looking at the pills before the starting point.
       if (i < pillListStart) continue;
 
-      PressedPill pill = widget.pressedPills[i];
+      PressedPill pill = pillPackageModel.loadedPills[i];
 
       //Count the active pills
       if (pill.active &&
@@ -159,8 +158,8 @@ class _ProtectionState extends State<Protection> {
 
   int _countPreviousPerfectUseActives() {
     PressedPill lastActivePill;
-    for (int i = 0; i < widget.pressedPills.length; i++) {
-      PressedPill pill = widget.pressedPills[i];
+    for (int i = 0; i < pillPackageModel.loadedPills.length; i++) {
+      PressedPill pill = pillPackageModel.loadedPills[i];
       if (pill.active && lastActivePill != null) {
         //If a gap between actives was found, count all valid actives after the gap.
         if (!_isValidPill(pill.date, lastActivePill.date, COMBO_TIME_WINDOW)) {
@@ -178,13 +177,13 @@ class _ProtectionState extends State<Protection> {
   int _getEffectivePackageDays() => _getEffectivePackageWeeks() * 7;
 
   int _getEffectivePackageWeeks() {
-    return widget.totalWeeks > COMBO_STANDARD_PILL_PACKAGE
+    return totalWeeks > COMBO_STANDARD_PILL_PACKAGE
         ? COMBO_STANDARD_PILL_PACKAGE
-        : widget.totalWeeks;
+        : totalWeeks;
   }
 
   int _getEffectiveTotalActiveDays() =>
-      _getEffectivePackageDays() - widget.placeboDays;
+      _getEffectivePackageDays() - placeboDays;
 
   int _getHoursDifference(DateTime currentDate, DateTime lastDate) {
     int hours = lastDate.difference(currentDate).inHours.abs();
@@ -192,7 +191,7 @@ class _ProtectionState extends State<Protection> {
   }
 
   DateTime _getLastActiveDate() {
-    for (PressedPill pill in widget.pressedPills) {
+    for (PressedPill pill in pillPackageModel.loadedPills) {
       if (pill.active) {
         return pill.date;
       }
@@ -203,15 +202,16 @@ class _ProtectionState extends State<Protection> {
   ProtectionStatusInfo _getProtectionState() {
     // If the pressed pills have not been loaded or there are no pressed pills
     // the user is not protected
-    if (widget.pressedPills == null || widget.pressedPills.length == 0) {
+    if (pillPackageModel.loadedPills == null ||
+        pillPackageModel.loadedPills.length == 0) {
       Status _status = Status.unprotected;
-      StatusInfo _statusInfo = widget.isMiniPill
+      StatusInfo _statusInfo = isMiniPill
           ? StatusInfo.unprotected_max_mini
           : StatusInfo.unprotected_X_combo;
       return ProtectionStatusInfo(state: _status, stateInfo: _statusInfo);
     }
 
-    if (widget.isMiniPill) {
+    if (isMiniPill) {
       return _calculateProtectionStatusInfoMiniPill();
     } else {
       return _calculateProtectionStatusInfoComboPill();
@@ -250,12 +250,11 @@ class _ProtectionState extends State<Protection> {
         returnString = PROTECTED_COMBO;
         break;
       case StatusInfo.protected_can_break_combo:
-        returnString = sprintf(PROTECTED_BREAK_AVAILABLE, [
-          NumberWordsSpelling.toWord(widget.placeboDays.toString(), "en_US")
-        ]);
+        returnString = sprintf(PROTECTED_BREAK_AVAILABLE,
+            [NumberWordsSpelling.toWord(placeboDays.toString(), "en_US")]);
         break;
       case StatusInfo.protected_on_break_combo:
-        int days = widget.placeboDays -
+        int days = placeboDays -
             _getLastActiveDate().difference(DateTime.now()).inDays.abs();
         returnString = sprintf(PROTECTED_MULTIPLE_DAYS_REMAINING,
             [NumberWordsSpelling.toWord(days.toString(), "en_US")]);
@@ -306,7 +305,7 @@ class _ProtectionState extends State<Protection> {
       return StatusInfo.protected_cannot_break_combo;
     }
 
-    bool lastWasActive = widget.pressedPills[0].active;
+    bool lastWasActive = pillPackageModel.loadedPills[0].active;
 
     //The last pill taken in 24 hours was active then the user may break.
     if (lastWasActive &&
@@ -317,7 +316,7 @@ class _ProtectionState extends State<Protection> {
     // Else if either the last pill was not active (placebo) or the user
     // difference time between the last actives was greater than the
     // max time window allowed the user is considered on break
-    int daysLeftOnBreak = widget.placeboDays -
+    int daysLeftOnBreak = placeboDays -
         _getLastActiveDate().difference(DateTime.now()).inDays.abs();
 
     if (daysLeftOnBreak >= 2) {
@@ -356,9 +355,10 @@ class _ProtectionState extends State<Protection> {
     int latePillCount = 0;
     PressedPill lastActivePill;
     for (int i = 0;
-        i < _getEffectiveTotalActiveDays() && i < widget.pressedPills.length;
+        i < _getEffectiveTotalActiveDays() &&
+            i < pillPackageModel.loadedPills.length;
         i++) {
-      PressedPill pill = widget.pressedPills[i];
+      PressedPill pill = pillPackageModel.loadedPills[i];
 
       if (lastActivePill != null &&
           !_isValidPill(pill.date, lastActivePill.date, COMBO_TIME_WINDOW)) {
@@ -382,12 +382,10 @@ class _ProtectionState extends State<Protection> {
   }
 
   bool _isInActiveWindowCombo() {
-
     DateTime _lastActiveDate = _getLastActiveDate();
-    if(_lastActiveDate == null)
-      {
-        return false;
-      }
+    if (_lastActiveDate == null) {
+      return false;
+    }
 
     return _getHoursDifference(_lastActiveDate, DateTime.now()) <=
         COMBO_TIME_WINDOW;
@@ -395,28 +393,28 @@ class _ProtectionState extends State<Protection> {
 
   bool _isProtectedCurrentPack() {
     DateTime _lastActiveDate = _getLastActiveDate();
-    if(_lastActiveDate == null)
-    {
+    if (_lastActiveDate == null) {
       return false;
     }
 
     int perfectUseActives = _countPerfectUseActives(COMBO_TIME_WINDOW, 0);
     DateTime currentTime = DateTime.now();
+
     return (perfectUseActives >= COMBO_EFFECTIVE_PILLS &&
             _getHoursDifference(_lastActiveDate, currentTime) <=
                 COMBO_TIME_WINDOW) ||
         perfectUseActives >= _getEffectiveTotalActiveDays() &&
             _getHoursDifference(_lastActiveDate, currentTime) <=
-                (widget.placeboDays * 24 + COMBO_TIME_WINDOW);
+                (placeboDays * 24 + COMBO_TIME_WINDOW);
   }
 
   bool _isValidLastPack() {
     int gapDays = _countLastGapDaysBetweenActives();
-    int allowedTimeSlipDays = (COMBO_TIME_WINDOW/24).floor();
-    return gapDays <= widget.placeboDays +  allowedTimeSlipDays &&
+    int allowedTimeSlipDays = (COMBO_TIME_WINDOW / 24).floor();
+    return gapDays <= placeboDays + allowedTimeSlipDays &&
         _countPreviousPerfectUseActives() >= _getEffectiveTotalActiveDays();
   }
 
-  bool _isValidPill(DateTime currentDate, DateTime lastDate, int hours)  =>
+  bool _isValidPill(DateTime currentDate, DateTime lastDate, int hours) =>
       _getHoursDifference(currentDate, lastDate) <= hours;
 }

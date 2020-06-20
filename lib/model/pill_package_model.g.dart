@@ -27,8 +27,55 @@ mixin _$PillPackageModel on PillPackageModelBase, Store {
     }, _$currentPackageAtom, name: '${_$currentPackageAtom.name}_set');
   }
 
+  final _$loadedPillsAtom = Atom(name: 'PillPackageModelBase.loadedPills');
+
+  @override
+  ObservableList<PressedPill> get loadedPills {
+    _$loadedPillsAtom.context.enforceReadPolicy(_$loadedPillsAtom);
+    _$loadedPillsAtom.reportObserved();
+    return super.loadedPills;
+  }
+
+  @override
+  set loadedPills(ObservableList<PressedPill> value) {
+    _$loadedPillsAtom.context.conditionallyRunInAction(() {
+      super.loadedPills = value;
+      _$loadedPillsAtom.reportChanged();
+    }, _$loadedPillsAtom, name: '${_$loadedPillsAtom.name}_set');
+  }
+
   final _$PillPackageModelBaseActionController =
       ActionController(name: 'PillPackageModelBase');
+
+  @override
+  dynamic setLoadedPressedPills(List<PressedPill> loadedPills) {
+    final _$actionInfo = _$PillPackageModelBaseActionController.startAction();
+    try {
+      return super.setLoadedPressedPills(loadedPills);
+    } finally {
+      _$PillPackageModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic removePressedPill(int pillId) {
+    final _$actionInfo = _$PillPackageModelBaseActionController.startAction();
+    try {
+      return super.removePressedPill(pillId);
+    } finally {
+      _$PillPackageModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  dynamic setPressedPill(PressedPill pill) {
+    final _$actionInfo = _$PillPackageModelBaseActionController.startAction();
+    try {
+      return super.setPressedPill(pill);
+    } finally {
+      _$PillPackageModelBaseActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setCurrentPackage(Map<int, PressedPill> currentPackage) {

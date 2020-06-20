@@ -1,6 +1,6 @@
 class PressedPill {
-  final int id;
-  final DateTime date;
+  int id;
+  DateTime date;
   final int day;
   final bool active;
 

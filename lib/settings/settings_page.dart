@@ -43,8 +43,6 @@ class _SettingsPageState extends State<SettingsPage> {
               _setPreferences(loadedPrefs.data);
               AppDefaults.hideLoading(context);
               _loaded = true;
-              print("pill package weeks");
-              print(_pillPackageWeeks);
             }
             body = _buildSettingsView();
           } else {
@@ -98,8 +96,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void _setPreferences(loadedPrefs) {
-    print("got prefs");
-    print(loadedPrefs);
     _sharedPrefs = loadedPrefs;
     _pillPackageWeeks = (_sharedPrefs.getInt(SettingsConstants.PILL_PACKAGE_WEEKS) ?? 4);
     _placeboDays = (_sharedPrefs.getInt(SettingsConstants.PLACEBO_DAYS) ?? 7);
@@ -107,8 +103,6 @@ class _SettingsPageState extends State<SettingsPage> {
     int alarmHours = (_sharedPrefs.getInt(SettingsConstants.HOURS_ALARM_TIME) ?? 12);
     int alarmMinutes = (_sharedPrefs.getInt(SettingsConstants.MINUTES_ALARM_TIME) ?? 0);
     _alarmTime = TimeOfDay(hour: alarmHours, minute: alarmMinutes);
-
-    print("set prefs");
   }
 
   _updateData() {

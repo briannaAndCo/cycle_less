@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:pill_reminder/data/pressed_pill.dart';
+import 'package:pill_reminder/model/pill_package_model.dart';
 import 'dart:math';
 import 'package:pill_reminder/widgets/protection.dart';
 
@@ -11,7 +12,7 @@ void main() {
     await tester.pumpWidget( Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: getValidMiniPills(),
+            pillPackageModel: getValidMiniPills(),
             totalWeeks: 4,
             placeboDays: 0,
             isMiniPill: true)));
@@ -24,7 +25,7 @@ void main() {
     await tester.pumpWidget( Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: getInvalidAmountMiniPills(),
+            pillPackageModel: getInvalidAmountMiniPills(),
             totalWeeks: 4,
             placeboDays: 0,
             isMiniPill: true)));
@@ -37,7 +38,7 @@ void main() {
     await tester.pumpWidget( Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: getInvalidTimeMiniPills(),
+            pillPackageModel: getInvalidTimeMiniPills(),
             totalWeeks: 4,
             placeboDays: 0,
             isMiniPill: true)));
@@ -50,7 +51,7 @@ void main() {
     await tester.pumpWidget( Directionality(
         textDirection: TextDirection.ltr,
         child: Protection(
-            pressedPills: getInvalidLateMiniPills(),
+            pillPackageModel: getInvalidLateMiniPills(),
             totalWeeks: 4,
             placeboDays: 0,
             isMiniPill: true)));
@@ -61,7 +62,7 @@ void main() {
 
 }
 
-List<PressedPill> getValidMiniPills() {
+PillPackageModel getValidMiniPills() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -72,10 +73,12 @@ List<PressedPill> getValidMiniPills() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(2)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> getInvalidAmountMiniPills() {
+PillPackageModel getInvalidAmountMiniPills() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -86,10 +89,12 @@ List<PressedPill> getInvalidAmountMiniPills() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(2)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
 
-List<PressedPill> getInvalidTimeMiniPills() {
+PillPackageModel getInvalidTimeMiniPills() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -99,9 +104,11 @@ List<PressedPill> getInvalidTimeMiniPills() {
     date = date.subtract(Duration(days: 1, hours: 4));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }
-List<PressedPill> getInvalidLateMiniPills() {
+PillPackageModel getInvalidLateMiniPills() {
   List<PressedPill> list = new List();
 
   DateTime date = DateTime.now();
@@ -113,5 +120,7 @@ List<PressedPill> getInvalidLateMiniPills() {
     date = date.subtract(Duration(days: 1, hours: generator.nextInt(2)));
   }
 
-  return list;
+  PillPackageModel model = PillPackageModel();
+  model.setLoadedPressedPills(list);
+  return model;
 }

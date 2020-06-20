@@ -21,14 +21,16 @@ void createDatabase() async {
   );
 }
 
-Future<void> insertOrUpdatePressedPill(PressedPill pill) async {
+Future<int> insertOrUpdatePressedPill(PressedPill pill) async {
   final Database db = await _retrieveDatabase();
 
-  await db.insert(
+  int newId = await db.insert(
     'pressed_pill',
     pill.toMap(),
     conflictAlgorithm: ConflictAlgorithm.replace,
   );
+
+  return newId;
 }
 
 Future<void> deletePressedPill(int id) async {

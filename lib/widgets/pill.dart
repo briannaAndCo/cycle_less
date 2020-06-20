@@ -2,57 +2,49 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pill_reminder/model/pill_model.dart';
+import 'package:pill_reminder/model/pill_package_model.dart';
 import 'package:scheduler/scheduler.dart';
 import '../data/database_defaults.dart' as DatabaseDefaults;
 import '../data/pressed_pill.dart';
 import '../app_defaults.dart' as AppDefaults;
 
 class Pill extends StatelessWidget {
-  Pill(
-      {Key key,
-      this.id,
-      this.day,
-      this.isActive,
-      this.pillModel,
-      this.alarmTime,
-      this.refreshDataCall})
+  Pill({Key key, this.pillModel, this.alarmTime, this.pillPackageModel})
       : super(key: key);
 
-  final int id;
-  final int day;
-  final bool isActive;
   final PillModel pillModel;
   final TimeOfDay alarmTime;
-  final Function refreshDataCall;
+  final PillPackageModel pillPackageModel;
 
   @override
   Widget build(BuildContext context) {
-
     return Observer(
         builder: (_) => Container(
-        //  color: Colors.pink,
-        child: new Material(
-            type: MaterialType.transparency,
-            child: IconButton(
-                icon: Icon(_getIcon()),
-                tooltip: day.toString(),
-                onPressed: () {
-                  showPressDialog(context);
-                },
-                color: _getColor(),
-                iconSize: _getSize(),
-                splashColor: Colors.black54))));
+            //  color: Colors.pink,
+            child: new Material(
+                type: MaterialType.transparency,
+                child: IconButton(
+                    icon: Icon(_getIcon()),
+                    tooltip: pillModel.day.toString(),
+                    onPressed: () {
+                      showPressDialog(context);
+                    },
+                    color: _getColor(),
+                    iconSize: _getSize(),
+                    splashColor: Colors.black54))));
   }
 
-  double _getSize() => pillModel.isPressed ? 32 : (isActive ? 30 : 34);
+  double _getSize() =>
+      pillModel.isPressed ? 32 : (pillModel.isActive ? 30 : 34);
 
   Color _getColor() {
     return pillModel.isPressed
-      ? Colors.grey
-      : (isActive ? Colors.white70 : Colors.brown[900]);
+        ? Colors.grey
+        : (pillModel.isActive ? Colors.white70 : Colors.brown[900]);
   }
 
-  IconData _getIcon() => pillModel.isPressed ? Icons.brightness_1 : Icons.fiber_manual_record;
+  IconData _getIcon() =>
+      pillModel.isPressed ? Icons.brightness_1 : Icons.fiber_manual_record;
 
   showPressDialog(BuildContext context) {
     DateTime localDateTime = this.pillModel.currentDate ?? DateTime.now();
@@ -103,7 +95,9 @@ class Pill extends StatelessWidget {
       title: Text("Set Pill Taken Time"),
       content: widget,
       backgroundColor: Colors.black87,
-      actions: [_cancelButton, _saveOrUpdateButton, _deleteButton],
+      actions: pillModel.currentDate == null
+          ? [_cancelButton, _saveOrUpdateButton]
+          : [_cancelButton, _saveOrUpdateButton, _deleteButton],
     );
 
     //show the dialog
@@ -119,24 +113,31 @@ class Pill extends StatelessWidget {
     pillModel.setPressed(false);
     pillModel.setCurrentDate(null);
 
-    DatabaseDefaults.deletePressedPill(id);
+    DatabaseDefaults.deletePressedPill(pillModel.id);
+    pillPackageModel.removePressedPill(pillModel.id);
     Navigator.of(context).pop();
 
     //Reschedule the next notifications, to make sure they aren't missed
     //TODO: Centralize these text strings
     Scheduler.scheduleNotification(
         alarmTime, "Pill Reminder", "Take your pill.");
-
-  //  _updatePillPackageData();
   }
 
-  void saveOrUpdatePress(BuildContext context, DateTime dateTime) {
+  void saveOrUpdatePress(BuildContext context, DateTime dateTime) async {
+    PressedPill pressedPill = PressedPill(
+        id: pillModel.id,
+        day: pillModel.day,
+        date: dateTime,
+        active: pillModel.isActive);
+    int newId = await DatabaseDefaults.insertOrUpdatePressedPill(pressedPill);
+    pressedPill.id = newId;
+    pressedPill.date = dateTime;
+    pillPackageModel.setPressedPill(pressedPill);
+
+    pillModel.setId(newId);
     pillModel.setPressed(true);
     pillModel.setCurrentDate(dateTime);
 
-    PressedPill pressedPill =
-        PressedPill(id: id, day: day, date: dateTime, active: isActive);
-    DatabaseDefaults.insertOrUpdatePressedPill(pressedPill);
     Navigator.of(context).pop();
 
     double timeDifference =
@@ -147,14 +148,6 @@ class Pill extends StatelessWidget {
     if (timeDifference >= -12 || timeDifference < .5) {
       Scheduler.cancelNextNotification(alarmTime);
     }
-
-   // _updatePillPackageData();
-  }
-
-  void _updatePillPackageData() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      refreshDataCall();
-    });
   }
 
   double convert(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;

@@ -1,59 +1,48 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pill_reminder/model/new_pack_indicator.dart';
 import 'package:pill_reminder/model/pill_model.dart';
 import 'package:pill_reminder/model/pill_package_model.dart';
-import 'dart:async';
 import '../data/pressed_pill.dart';
 import 'pill.dart';
-import '../data/database_defaults.dart' as DatabaseDefaults;
-import '../app_defaults.dart' as AppDefaults;
 
 class PillPackage extends StatelessWidget {
   PillPackage(
       {Key key,
       this.alarmTime,
-      this.pressedPills,
       this.newPack,
       this.totalWeeks,
       this.placeboDays,
-      this.refreshDataCall})
+      this.pillPackageModel})
       : super(key: key);
 
-  final List<PressedPill> pressedPills;
   final bool newPack;
   final int totalWeeks;
   final int placeboDays;
   final TimeOfDay alarmTime;
-  final Function refreshDataCall;
-  final PillPackageModel pillPackageModel = new PillPackageModel();
+  final PillPackageModel pillPackageModel;
 
   @override
   Widget build(BuildContext context) {
-    Widget body;
-    print("building: " + newPack.toString());
-    if (pressedPills != null) {
-      body = GridView.count(
-          primary: false,
-          padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
-          crossAxisCount: 7,
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          childAspectRatio: 1,
-          children: _getPills());
-    } else {
-      body = Container();
-    }
-
-    return Center(
-      child: body,
-    );
+    return Observer(
+        builder: (_) => Center(
+              child: GridView.count(
+                  primary: false,
+                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  crossAxisCount: 7,
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  childAspectRatio: 1,
+                  children: pillPackageModel.loadedPills == null
+                      ? List<Widget>()
+                      : _getPills()),
+            ));
   }
 
   List<Widget> _getPills() {
     int partialWeekActivePills = 7 - placeboDays;
-    int activePills =
-        totalWeeks * 7 - placeboDays - partialWeekActivePills;
+    int activePills = totalWeeks * 7 - placeboDays - partialWeekActivePills;
 
     // Because the package is a grid that fills from top to bottom,
     // The first day in the grid is a 7. This is decreased until day 0,
@@ -93,20 +82,17 @@ class PillPackage extends StatelessWidget {
   }
 
   Widget _createPill(int day, bool isActive) {
-
     PillModel model = new PillModel();
+    model.setId(_id(day));
+    model.setDay(day);
     model.setCurrentDate(_date(day));
     model.setPressed(_isPressed(day));
+    model.setIsActive(_isActive(isActive, day));
 
-    return Observer(
-        builder: (_) => Pill(
-            key: Key("pill$day"),
-            id: _id(day),
-            day: day,
-            isActive: _isActive(isActive, day),
-            pillModel: model,
-            alarmTime: alarmTime,
-            refreshDataCall: refreshDataCall));
+    return Pill(
+        pillModel: model,
+        alarmTime: alarmTime,
+        pillPackageModel: pillPackageModel);
   }
 
   void _updateCurrentPackage() {
@@ -120,7 +106,7 @@ class PillPackage extends StatelessWidget {
 
     //If the user has selected to start a new pack, don't use any taken pills
     // to create the package
-    for (PressedPill pill in pressedPills) {
+    for (PressedPill pill in pillPackageModel.loadedPills) {
       pillPackageModel.currentPackage[pill.day] = pill;
 
       if (pill.day == 1) {
@@ -153,13 +139,5 @@ class PillPackage extends StatelessWidget {
       return pillPackageModel.currentPackage[day].date;
     }
     return null;
-  }
-
-  Future<List<PressedPill>> _loadPressedPills() async {
-    //Only bother loading the last package worth of pressed pills
-    int maxRetrieve = totalWeeks * 7;
-    List<PressedPill> pills =
-        await DatabaseDefaults.retrievePressedPills(maxRetrieve);
-    return pills;
   }
 }

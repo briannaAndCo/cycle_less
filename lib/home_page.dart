@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pill_reminder/model/new_pack_indicator.dart';
+import 'package:pill_reminder/model/pill_package_model.dart';
 import 'package:pill_reminder/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_defaults.dart' as AppDefaults;
 import 'data/database_defaults.dart' as DatabaseDefaults;
-import 'data/pressed_pill.dart';
 import 'settings/settings_constants.dart' as SettingsDefaults;
 import 'settings/settings_page.dart';
 import 'widgets/pill_package.dart';
 import 'widgets/protection.dart';
+import 'model/pill_package_model.dart';
+import 'model/settings_model.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -22,11 +24,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<PressedPill> _pressedPills;
-  bool _loadedData = false;
-  int _pillPackageWeeks;
-  int _placeboDays;
-  TimeOfDay _alarmTime;
+  PillPackageModel _pillPackageModel = new PillPackageModel();
+  SettingsModel _settingsModel = new SettingsModel();
 
   final NewPackIndicator newPackIndicator = NewPackIndicator();
 
@@ -34,54 +33,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     DatabaseDefaults.createDatabase();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await AppDefaults.showLoading(context);
-    });
+    _loadData();
   }
 
   @override
   Widget build(BuildContext context) {
-    return new FutureBuilder(
-      future: _loadData(),
-      builder: (context, AsyncSnapshot<bool> loadedData) {
-        Widget body;
-
-        if (loadedData.hasData) {
-          if (!_loadedData) {
-            AppDefaults.hideLoading(context);
-            _loadedData = true;
-          }
-
-          body = Container(
-              child: Column(children: [
-            Expanded(
-              child: Observer(
-              builder: (_) => PillPackage(
-                        pressedPills: _pressedPills,
-                        newPack: newPackIndicator.isNewPack,
-                        totalWeeks: _pillPackageWeeks,
-                        placeboDays: _placeboDays,
-                        alarmTime: _alarmTime,
-                        refreshDataCall: _updateData,
-                      ))),
-            SizedBox(height: 20),
-            Protection(
-              pressedPills: _pressedPills,
-              totalWeeks: _pillPackageWeeks,
-              placeboDays: _placeboDays,
-              isMiniPill: false,
-            ),
-            SizedBox(height: 10),
-          ]));
-        } else {
-          body = Container();
-        }
-
         return Scaffold(
             appBar: AppBar(
                 // Here we take the value from the MyHomePage object that was created by
                 // the App.build method, and use it to set our appbar title.
-
                 title: Text(widget.title),
                 actions: <Widget>[
                   IconButton(
@@ -95,39 +55,45 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => SettingsPage()),
-                        ).whenComplete(_updateData);
+                        );
                       })
                 ]),
-            body: body);
-      },
-    );
+            body: Observer(builder: (_) => _pillPackageModel.loadedPills == null ? Container(): Column(children: [
+                  Expanded(
+                      child: PillPackage(
+                            pillPackageModel: _pillPackageModel,
+                            newPack: newPackIndicator.isNewPack,
+                            totalWeeks: _settingsModel.pillPackageWeeks,
+                            placeboDays: _settingsModel.placeboDays,
+                            alarmTime: _settingsModel.alarmTime,
+                          )),
+                  SizedBox(height: 20),
+                  Protection(
+                    pillPackageModel: _pillPackageModel,
+                    totalWeeks: _settingsModel.pillPackageWeeks,
+                    placeboDays: _settingsModel.placeboDays,
+                    isMiniPill: false,
+                  ),
+                  SizedBox(height: 10),
+                ])));
   }
 
-  _updateData() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      setState(() {
-        _pressedPills = null;
-        _loadData();
-      });
-    });
-  }
-
-  Future<bool> _loadData() async {
+  Future<void> _loadData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _setSettingsValues(prefs);
     //Only bother loading the 2 last packages since that is the max required to maintain protection
-    int maxRetrieve = _pillPackageWeeks * 7 * 2;
-    _pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
-    return true;
+    int maxRetrieve = _settingsModel.pillPackageWeeks * 7 * 2;
+    var pressedPills = await DatabaseDefaults.retrievePressedPills(maxRetrieve);
+    _pillPackageModel.setLoadedPressedPills(pressedPills);
   }
 
   void _setSettingsValues(_preferences) {
-    _pillPackageWeeks =
-        (_preferences.getInt(SettingsDefaults.PILL_PACKAGE_WEEKS) ?? 4);
-    _placeboDays = (_preferences.getInt(SettingsDefaults.PLACEBO_DAYS) ?? 7);
+    _settingsModel.setPillPackageWeeks(_preferences.getInt(SettingsDefaults.PILL_PACKAGE_WEEKS) ?? 4);
+    _settingsModel.setPlaceboDays(_preferences.getInt(SettingsDefaults.PLACEBO_DAYS) ?? 7);
+    _settingsModel.setMiniPill(_preferences.getBool(SettingsDefaults.MINI_PILL) ?? false);
     int hours = (_preferences.getInt(SettingsDefaults.HOURS_ALARM_TIME) ?? 12);
     int minutes =
         (_preferences.getInt(SettingsDefaults.MINUTES_ALARM_TIME) ?? 0);
-    _alarmTime = TimeOfDay(hour: hours, minute: minutes);
+    _settingsModel.setAlarmTime(TimeOfDay(hour: hours, minute: minutes));
   }
 }
