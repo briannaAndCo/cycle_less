@@ -1,11 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pill_reminder/model/pill_model.dart';
 import 'package:pill_reminder/model/pill_package_model.dart';
 import '../data/pressed_pill.dart';
 import 'pill.dart';
+import '../app_defaults.dart' as AppDefaults;
 
 class PillPackage extends StatelessWidget {
   PillPackage(
@@ -31,7 +30,7 @@ class PillPackage extends StatelessWidget {
         builder: (_) => Center(
               child: GridView.count(
                   primary: false,
-                  padding: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
                   crossAxisCount: 7,
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
@@ -63,10 +62,12 @@ class PillPackage extends StatelessWidget {
 
     //Because the grid fills from top to bottom, the last active pills
     // must be put before the last active pills if there are any partial week active pills.
-    List<Widget> pillList = List<Widget>();
+    List<Widget> widgetList = List<Widget>();
+
+    widgetList.addAll(_createWeekdays());
 
     for (int i = 0; i < activePills; i++) {
-      pillList.add(_createPill(day, true));
+      widgetList.add(_createPill(day, true));
       _calculateDay();
     }
 
@@ -74,16 +75,41 @@ class PillPackage extends StatelessWidget {
     // active
     bool active = miniPill ? true : false;
     for (int i = 0; i < placeboDays; i++) {
-      pillList.add(_createPill(day, active));
+      widgetList.add(_createPill(day, active));
       _calculateDay();
     }
 
     for (int i = 0; i < partialWeekActivePills; i++) {
-      pillList.add(_createPill(day, true));
+      widgetList.add(_createPill(day, true));
       _calculateDay();
     }
 
-    return pillList;
+    return widgetList;
+  }
+
+  Iterable<Widget> _createWeekdays() {
+
+    List<Widget> list = List<Widget>();
+
+    DateTime dateTimeWeekday = (pillPackageModel.loadedPills != null &&
+            pillPackageModel.loadedPills.length > 0)
+        ? pillPackageModel.loadedPills[0].date
+        : DateTime.now();
+
+    for (int i = 0; i <= 6; i++) {
+      list.add(Center(
+          child: Wrap(direction: Axis.vertical, children: [
+        RotatedBox(
+            quarterTurns: 3,
+            child: Text(_weekday(dateTimeWeekday.weekday),
+                textAlign: TextAlign.start,
+                style: TextStyle(fontSize: AppDefaults.getSecondaryFontSize())))
+      ])));
+      dateTimeWeekday = dateTimeWeekday.add(Duration(days: 1));
+    }
+
+    //Return the list reversed because of the way it is displayed
+    return list.reversed;
   }
 
   Widget _createPill(int day, bool isActive) {
@@ -144,5 +170,24 @@ class PillPackage extends StatelessWidget {
       return pillPackageModel.currentPackage[day].date;
     }
     return null;
+  }
+
+  String _weekday(int val) {
+    switch (val) {
+      case 1:
+        return "MON";
+      case 2:
+        return "TUES";
+      case 3:
+        return "WED";
+      case 4:
+        return "THUR";
+      case 5:
+        return "FRI";
+      case 6:
+        return "SAT";
+      case 7:
+        return "SUN";
+    }
   }
 }

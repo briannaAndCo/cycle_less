@@ -5,7 +5,6 @@ import 'package:pill_reminder/model/pill_package_model.dart';
 import 'package:pill_reminder/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'app_defaults.dart' as AppDefaults;
 import 'data/database_defaults.dart' as DatabaseDefaults;
 import 'settings/settings_constants.dart' as SettingsDefaults;
 import 'settings/settings_page.dart';
