@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.add_circle_outline),
-                      onPressed: () {newPackIndicator.setTrue();}
+                      onPressed: _confirmNewPack
                   ),
                   IconButton(
                       icon: Icon(Icons.settings),
@@ -76,6 +76,37 @@ class _HomePageState extends State<HomePage> {
                   ),
                   SizedBox(height: 10),
                 ])));
+  }
+
+  _confirmNewPack()
+  {
+    Widget _okButton = FlatButton(
+      child: Text("Yes"),
+      onPressed: () {newPackIndicator.setTrue();
+      Navigator.of(context).pop();},
+    );
+    Widget _cancelButton = FlatButton(
+      child: Text("No"),
+      onPressed: () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // set up the dialog to update the number
+    AlertDialog alert = AlertDialog(
+      title: Text("New Pack"),
+      content: Text("Would you like to start a new pack?"),
+      backgroundColor: Colors.black87,
+      actions: [_okButton, _cancelButton],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   Future<void> _loadData() async {
