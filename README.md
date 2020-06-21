@@ -29,7 +29,7 @@ Minimal app for birth control reminder written in flutter
   - [x] read in past data and update pill package state on initalization
   - [x] update pill package state from DB when pill row changes (insert/delete)
 
-- [ ] main page
+- [x] main page
   - [x] read in weeks and placebo days to create pill package
   - [x] update pill package on return from settings page
   - [x] popup to create pill press - has the ability to set press date/time
@@ -57,7 +57,7 @@ Minimal app for birth control reminder written in flutter
   - [ ] icons
   - [ ] notes
   
-- [ ] ability to start new pack
+- [x] ability to start new pack
 - [x] ability to take break with no placebos
 - [x] signal for protected or not
   - [x] calculation for protection
