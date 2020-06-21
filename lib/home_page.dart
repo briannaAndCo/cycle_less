@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SettingsPage()),
+                              builder: (context) => SettingsPage(settingsModel: _settingsModel,)),
                         );
                       })
                 ]),
@@ -63,6 +63,7 @@ class _HomePageState extends State<HomePage> {
                       child: PillPackage(
                             pillPackageModel: _pillPackageModel,
                             newPack: newPackIndicator.isNewPack,
+                            miniPill: _settingsModel.miniPill,
                             totalWeeks: _settingsModel.pillPackageWeeks,
                             placeboDays: _settingsModel.placeboDays,
                             alarmTime: _settingsModel.alarmTime,

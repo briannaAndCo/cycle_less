@@ -2,8 +2,6 @@ library app_defaults;
 
 import 'package:flutter/material.dart';
 
-import 'widgets/loading_dialog.dart';
-
 Color getPrimarySwatchColor() {
   return Colors.blueGrey;
 }
@@ -36,19 +34,3 @@ double getSecondaryFontSize() {
   return 14;
 }
 
-showLoading(context) async {
-  // show the dialog
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return LoadingDialog();
-    },
-  );
-}
-
-hideLoading(context) {
-  WidgetsBinding.instance.addPostFrameCallback((_) async {
-    Navigator.pop(context);
-  });
-}

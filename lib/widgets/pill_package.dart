@@ -12,12 +12,14 @@ class PillPackage extends StatelessWidget {
       {Key key,
       this.alarmTime,
       this.newPack,
+      this.miniPill,
       this.totalWeeks,
       this.placeboDays,
       this.pillPackageModel})
       : super(key: key);
 
   final bool newPack;
+  final bool miniPill;
   final int totalWeeks;
   final int placeboDays;
   final TimeOfDay alarmTime;
@@ -68,8 +70,11 @@ class PillPackage extends StatelessWidget {
       _calculateDay();
     }
 
+    //If the mini pill value is true, the placbo pills do not exist and are
+    // active
+    bool active = miniPill ? true : false;
     for (int i = 0; i < placeboDays; i++) {
-      pillList.add(_createPill(day, false));
+      pillList.add(_createPill(day, active));
       _calculateDay();
     }
 

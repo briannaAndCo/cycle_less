@@ -1,40 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pill_reminder/settings/settings_widget.dart';
+import '../model/settings_model.dart';
+import 'settings_constants.dart' as SettingsConstants;
 
-class NumberSetting extends SettingsWidget {
-  NumberSetting(
+class PackageWeeksSetting extends SettingsWidget {
+  PackageWeeksSetting(
       {Key key,
-      String displayName,
-      int initialValue,
-      String storageName,
-      Function loadData,
-      this.enabled})
+      SettingsModel settingsModel})
       : super(
-            key: key,
-            displayName: displayName,
-            initialValue: initialValue,
-            storageName: storageName,
-            loadData: loadData);
-
-  final bool enabled;
-
+    key: key,
+      displayName: "Package Weeks",
+      settingsModel: settingsModel,
+      storageName: SettingsConstants.PILL_PACKAGE_WEEKS);
+  
   @override
-  SettingsWidgetState createState() => _NumberSettingState();
-}
-
-class _NumberSettingState extends SettingsWidgetState<NumberSetting, int> {
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(widget.displayName),
-      trailing: Text(currentValue.toString()),
-      enabled: widget.enabled,
+  Widget build(BuildContext context) => Observer(builder: (_) => ListTile(
+      title: Text(displayName),
+      trailing: Text(settingsModel.pillPackageWeeks.toString()),
+      enabled: !settingsModel.miniPill,
       onTap: () {
         _showUpdateDialog(context);
       },
-    );
-  }
+    ));
 
   _showUpdateDialog(BuildContext context) {
     TextEditingController numberController = new TextEditingController();
@@ -47,9 +36,7 @@ class _NumberSettingState extends SettingsWidgetState<NumberSetting, int> {
 
     Function onSavePressed = () {
       int numberInput = int.parse(numberController.text);
-      setState(() {
-        currentValue = numberInput;
-      });
+      settingsModel.setPillPackageWeeks(numberInput);
       savePreference(numberInput);
       Navigator.of(context).pop();
     };

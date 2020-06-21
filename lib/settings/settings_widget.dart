@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../model/settings_model.dart';
 
-abstract class SettingsWidget extends StatefulWidget {
+abstract class SettingsWidget extends StatelessWidget {
   SettingsWidget(
       {Key key,
       this.displayName,
-      this.initialValue,
-      this.storageName,
-      this.loadData})
+      this.settingsModel,
+      this.storageName})
       : super(key: key);
 
   final String displayName;
-  final dynamic initialValue;
+  final SettingsModel settingsModel;
   final String storageName;
-  final Function loadData;
-}
-
-abstract class SettingsWidgetState<T extends SettingsWidget, V>
-    extends State<T> {
-  V currentValue;
-
-  @override
-  void initState() {
-    super.initState();
-    currentValue = widget.initialValue;
-  }
 
   showUpdateDialog(
       BuildContext context, Widget inputWidget, Function onSavePressed) {
@@ -42,7 +30,7 @@ abstract class SettingsWidgetState<T extends SettingsWidget, V>
 
     // set up the dialog to update the number
     AlertDialog alert = AlertDialog(
-      title: Text("Update " + widget.displayName),
+      title: Text("Update " + displayName),
       content: inputWidget,
       backgroundColor: Colors.black87,
       actions: [_saveButton, _cancelButton],
@@ -60,9 +48,9 @@ abstract class SettingsWidgetState<T extends SettingsWidget, V>
   savePreference(newValue) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (newValue is int) {
-      prefs.setInt(widget.storageName, newValue);
+      prefs.setInt(storageName, newValue);
     } else if (newValue is bool) {
-      prefs.setBool(widget.storageName, newValue);
+      prefs.setBool(storageName, newValue);
     } else {
       throw ("type of preference save not implemented. Implement save for pref type: " +
           newValue.runtimeType.toString());

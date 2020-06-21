@@ -1,33 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:pill_reminder/settings/settings_widget.dart';
+import '../model/settings_model.dart';
+import 'settings_constants.dart' as SettingsConstants;
 
 class MiniPillSetting extends SettingsWidget {
-  MiniPillSetting(
-      {Key key,
-      String displayName,
-      bool initialValue,
-      String storageName,
-      Function loadData})
+  MiniPillSetting({Key key, SettingsModel settingsModel})
       : super(
             key: key,
-            displayName: displayName,
-            initialValue: initialValue,
-            storageName: storageName,
-            loadData: loadData);
+            displayName: "Mini Pill",
+            settingsModel: settingsModel,
+            storageName: SettingsConstants.MINI_PILL);
 
   @override
-  SettingsWidgetState createState() => _MiniPillSettingState();
-}
-
-class _MiniPillSettingState extends SettingsWidgetState<MiniPillSetting, bool> {
-  @override
-  Widget build(BuildContext context) {
-    return SwitchListTile(
-      title: Text(widget.displayName),
-      value: currentValue,
-      onChanged: (value) => _showUpdateDialog(value, context),
-    );
-  }
+  Widget build(BuildContext context) => Observer(
+        builder: (_) => SwitchListTile(
+              title: Text(displayName),
+              value: settingsModel.miniPill,
+              onChanged: (value) => _showUpdateDialog(value, context),
+            ));
 
   _showUpdateDialog(bool value, BuildContext context) {
     Text warning;
@@ -35,17 +26,13 @@ class _MiniPillSettingState extends SettingsWidgetState<MiniPillSetting, bool> {
       warning =
           Text("Are you sure you would like to turn the mini pill setting on?");
     } else {
-      warning =
-          Text("Are you sure you would like to turn the mini pill setting on?");
+      warning = Text(
+          "Are you sure you would like to turn the mini pill setting off?");
     }
     Function onSavePressed = () {
-      setState(() {
-        currentValue = value;
-      });
-      savePreference(currentValue);
+      settingsModel.setMiniPill(value);
+      savePreference(value);
       Navigator.of(context).pop();
-      //Force a reload of the data
-      widget.loadData();
     };
 
     showUpdateDialog(context, warning, onSavePressed);
