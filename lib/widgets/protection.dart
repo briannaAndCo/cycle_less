@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:number_to_words_spelling/number_to_words_spelling.dart';
-import 'package:pill_reminder/model/pill_package_model.dart';
+import 'package:dose/model/pill_package_model.dart';
 import 'package:sprintf/sprintf.dart';
 import '../data/pressed_pill.dart';
 import 'protection_status_info.dart';
@@ -240,7 +240,7 @@ class Protection extends StatelessWidget {
           }
           returnString = PROTECTED_IN_24_HOURS;
         } else {
-          returnString = sprintf(PROTECTED_IN_X_DAYS, ["Seven"]);
+          returnString = sprintf(PROTECTED_IN_X_DAYS, ["seven"]);
         }
         break;
       case StatusInfo.compromised_combo:

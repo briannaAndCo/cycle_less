@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:pill_reminder/model/new_pack_indicator.dart';
-import 'package:pill_reminder/model/pill_package_model.dart';
-import 'package:pill_reminder/settings/settings_page.dart';
+import 'package:dose/model/new_pack_indicator.dart';
+import 'package:dose/model/pill_package_model.dart';
+import 'package:dose/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/database_defaults.dart' as DatabaseDefaults;

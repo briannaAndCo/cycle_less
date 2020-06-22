@@ -8,7 +8,7 @@ import 'pressed_pill.dart';
 void createDatabase() async {
   final database = openDatabase(
     // Set the path to the database.
-    join(await getDatabasesPath(), 'pill_reminder_database.db'),
+    join(await getDatabasesPath(), 'dose_database.db'),
 
     onCreate: (db, version) {
       return db.execute(
@@ -72,6 +72,6 @@ Future<void> deleteAllPressedPills() async {
 
 Future<Database> _retrieveDatabase() async {
   final database =
-      openDatabase(join(await getDatabasesPath(), 'pill_reminder_database.db'));
+      openDatabase(join(await getDatabasesPath(), 'dose_database.db'));
   return database;
 }

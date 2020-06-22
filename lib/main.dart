@@ -13,10 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Scheduler.createAndroidChannel("my.pill.reminder", "Pill Reminder", 4);
+    Scheduler.createAndroidChannel("io.pill.reminder.dose", "dose", 4);
 
     return MaterialApp(
-      title: 'Pill Reminder',
+      title: 'dose',
       theme: ThemeData(
         primarySwatch: AppDefaults.getPrimarySwatchColor(),
         canvasColor: AppDefaults.getCanvasColor(),
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             color: AppDefaults.getPrimaryTextColor(),
             fontSize: AppDefaults.getSecondaryFontSize())))
       ),
-      home: HomePage(title: 'Pill Reminder'),
+      home: HomePage(title: 'dose'),
     );
   }
 }

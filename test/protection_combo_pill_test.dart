@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:pill_reminder/data/pressed_pill.dart';
-import 'package:pill_reminder/model/pill_package_model.dart';
+import 'package:dose/data/pressed_pill.dart';
+import 'package:dose/model/pill_package_model.dart';
 import 'dart:math';
-import 'package:pill_reminder/widgets/protection.dart';
+import 'package:dose/widgets/protection.dart';
 
 void main() {
   testWidgets(

@@ -1,4 +1,4 @@
-package com.example.pill_reminder;
+package io.pill.reminder.dose;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;
