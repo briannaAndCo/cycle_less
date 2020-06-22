@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:dosettebox/settings/alarm_setting.dart';
-import 'package:dosettebox/settings/mini_pill_setting.dart';
-import 'package:dosettebox/settings/package_weeks_setting.dart';
+import 'package:cycleless/settings/alarm_setting.dart';
+import 'package:cycleless/settings/mini_pill_setting.dart';
+import 'package:cycleless/settings/package_weeks_setting.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/settings_model.dart';
 import '../app_defaults.dart' as AppDefaults;

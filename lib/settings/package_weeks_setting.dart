@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:dosettebox/settings/settings_widget.dart';
+import 'package:cycleless/settings/settings_widget.dart';
 import '../model/settings_model.dart';
 import 'settings_constants.dart' as SettingsConstants;
 

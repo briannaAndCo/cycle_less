@@ -1,4 +1,4 @@
-package io.landon.box.dosette;
+package io.cycleless;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

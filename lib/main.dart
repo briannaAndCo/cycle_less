@@ -13,10 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Scheduler.createAndroidChannel("io.landon.box.dosette", "dosettebox", 4);
+    Scheduler.createAndroidChannel("io.cycleless", "cycleless", 4);
 
     return MaterialApp(
-      title: 'DosetteBox',
+      title: 'Cycle Less',
       theme: ThemeData(
         primarySwatch: AppDefaults.getPrimarySwatchColor(),
         canvasColor: AppDefaults.getCanvasColor(),
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             color: AppDefaults.getPrimaryTextColor(),
             fontSize: AppDefaults.getSecondaryFontSize())))
       ),
-      home: HomePage(title: 'DosetteBox'),
+      home: HomePage(title: 'Cycle Less'),
     );
   }
 }

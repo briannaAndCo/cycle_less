@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:dosettebox/model/new_pack_indicator.dart';
-import 'package:dosettebox/model/pill_package_model.dart';
-import 'package:dosettebox/settings/settings_page.dart';
+import 'package:cycleless/model/new_pack_indicator.dart';
+import 'package:cycleless/model/pill_package_model.dart';
+import 'package:cycleless/settings/settings_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'data/database_defaults.dart' as DatabaseDefaults;
