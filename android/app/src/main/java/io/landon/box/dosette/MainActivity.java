@@ -1,4 +1,4 @@
-package io.pill.reminder.dose;
+package io.landon.box.dosette;
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity;

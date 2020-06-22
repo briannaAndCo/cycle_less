@@ -13,10 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    Scheduler.createAndroidChannel("io.pill.reminder.dose", "dose", 4);
+    Scheduler.createAndroidChannel("io.landon.box.dosette", "dosettebox", 4);
 
     return MaterialApp(
-      title: 'dose',
+      title: 'DosetteBox',
       theme: ThemeData(
         primarySwatch: AppDefaults.getPrimarySwatchColor(),
         canvasColor: AppDefaults.getCanvasColor(),
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
             color: AppDefaults.getPrimaryTextColor(),
             fontSize: AppDefaults.getSecondaryFontSize())))
       ),
-      home: HomePage(title: 'dose'),
+      home: HomePage(title: 'DosetteBox'),
     );
   }
 }

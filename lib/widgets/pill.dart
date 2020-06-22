@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:dose/model/pill_model.dart';
-import 'package:dose/model/pill_package_model.dart';
+import 'package:dosettebox/model/pill_model.dart';
+import 'package:dosettebox/model/pill_package_model.dart';
 import 'package:scheduler/scheduler.dart';
 import '../data/database_defaults.dart' as DatabaseDefaults;
 import '../data/pressed_pill.dart';

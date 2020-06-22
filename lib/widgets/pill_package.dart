@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:dose/model/pill_model.dart';
-import 'package:dose/model/pill_package_model.dart';
+import 'package:dosettebox/model/pill_model.dart';
+import 'package:dosettebox/model/pill_package_model.dart';
 import '../data/pressed_pill.dart';
 import 'pill.dart';
 import '../app_defaults.dart' as AppDefaults;

@@ -5,9 +5,9 @@
 Pod::Spec.new do |s|
   s.name             = 'scheduler'
   s.version          = '0.0.1'
-  s.summary          = 'A new flutter plugin project.'
+  s.summary          = 'A flutter plugin to allow local notifcations to be scheduled.'
   s.description      = <<-DESC
-A new flutter plugin project.
+A flutter plugin to allow local notifcations to be scheduled.
                        DESC
   s.homepage         = 'http://example.com'
   s.license          = { :file => '../LICENSE' }
