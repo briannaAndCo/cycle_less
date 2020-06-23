@@ -3,19 +3,32 @@ library app_defaults;
 import 'package:flutter/material.dart';
 
 Color getPrimarySwatchColor() {
-  return Colors.blueGrey;
+  return MaterialColor(
+       0xff462c3d,
+    <int, Color>{
+      50: Color.fromRGBO(70, 44, 61, .1),
+      100: Color.fromRGBO(70, 44, 61, .2),
+      200: Color.fromRGBO(70, 44, 61, .3),
+      300: Color.fromRGBO(70, 44, 61, .4),
+      400: Color.fromRGBO(70, 44, 61, .5),
+      500: Color.fromRGBO(70, 44, 61,.6),
+      600: Color.fromRGBO(70, 44, 61, .7),
+      700: Color.fromRGBO(70, 44, 61, .8),
+      800: Color.fromRGBO(70, 44, 61, .9),
+      900: Color.fromRGBO(70, 44, 61, 1),
+    });
 }
 
 Color getCanvasColor() {
-  return Colors.blueGrey[700];
+  return Color(0xff85687a);
 }
 
 Color getIconColor() {
-  return Colors.white70;
+  return Color(0xffc8b1b8);
 }
 
 Color getPrimaryTextColor() {
-  return Colors.white70;
+  return Color(0xffc8b1b8);
 }
 
 Color getDialogBackgroundColor() {
