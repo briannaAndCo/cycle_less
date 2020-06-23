@@ -70,21 +70,33 @@ class Pill extends StatelessWidget {
     );
 
     // set up the buttons
+    Widget _skipButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
+      child: Text("Skip"),
+      onPressed: () {
+        _skipPress(context, localDateTime);
+      },
+    );
+
+    // set up the buttons
     Widget _saveOrUpdateButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
       child: Text(this.pillModel.currentDate == null ? "Save" : "Update"),
       onPressed: () {
-        saveOrUpdatePress(context, localDateTime);
+        _saveOrUpdatePress(context, localDateTime);
       },
     );
 
     Widget _deleteButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
       child: Text("Delete"),
       onPressed: () {
-        deletePress(context);
+        _deletePress(context);
       },
     );
 
     Widget _cancelButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
         child: Text("Cancel"),
         onPressed: () {
           Navigator.of(context).pop();
@@ -96,7 +108,7 @@ class Pill extends StatelessWidget {
       content: widget,
       backgroundColor: Colors.black87,
       actions: pillModel.currentDate == null
-          ? [_cancelButton, _saveOrUpdateButton]
+          ? [_cancelButton, _skipButton, _saveOrUpdateButton]
           : [_cancelButton, _saveOrUpdateButton, _deleteButton],
     );
 
@@ -109,7 +121,7 @@ class Pill extends StatelessWidget {
     );
   }
 
-  void deletePress(BuildContext context) {
+  void _deletePress(BuildContext context) {
     pillModel.setPressed(false);
     pillModel.setCurrentDate(null);
 
@@ -123,7 +135,20 @@ class Pill extends StatelessWidget {
         alarmTime, "Pill Reminder", "Take your pill.");
   }
 
-  void saveOrUpdatePress(BuildContext context, DateTime dateTime) async {
+  void _skipPress(BuildContext context, DateTime dateTime) async {
+    Navigator.of(context).pop();
+
+    double timeDifference =
+        _convert(TimeOfDay.fromDateTime(dateTime)) - _convert(alarmTime);
+
+    // If this is less than 12 hours ahead or less than .5 hours after,
+    // cancel the next scheduled notification.
+    if (timeDifference >= -12 || timeDifference < .5) {
+      Scheduler.cancelNextNotification(alarmTime);
+    }
+  }
+
+  void _saveOrUpdatePress(BuildContext context, DateTime dateTime) async {
     PressedPill pressedPill = PressedPill(
         id: pillModel.id,
         day: pillModel.day,
@@ -141,7 +166,7 @@ class Pill extends StatelessWidget {
     Navigator.of(context).pop();
 
     double timeDifference =
-        convert(TimeOfDay.fromDateTime(dateTime)) - convert(alarmTime);
+        _convert(TimeOfDay.fromDateTime(dateTime)) - _convert(alarmTime);
 
     // If this is less than 12 hours ahead or less than .5 hours after,
     // cancel the next scheduled notification.
@@ -150,5 +175,5 @@ class Pill extends StatelessWidget {
     }
   }
 
-  double convert(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
+  double _convert(TimeOfDay myTime) => myTime.hour + myTime.minute / 60.0;
 }

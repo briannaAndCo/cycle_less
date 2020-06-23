@@ -37,8 +37,11 @@ class MyApp extends StatelessWidget {
               fontSize: AppDefaults.getPrimaryFontSize()),
         ),
         dialogTheme: DialogTheme(
+            contentTextStyle: TextStyle(
+                color: AppDefaults.getCanvasColor(),
+                fontSize: AppDefaults.getSecondaryFontSize()),
             titleTextStyle: TextStyle(
-                color: AppDefaults.getPrimarySwatchColor(),
+                color: AppDefaults.getPrimaryTextColor(),
                 fontSize: AppDefaults.getPrimaryFontSize())),
         inputDecorationTheme: InputDecorationTheme(
             enabledBorder: UnderlineInputBorder(

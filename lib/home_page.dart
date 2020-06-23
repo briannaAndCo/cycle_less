@@ -12,6 +12,7 @@ import 'widgets/pill_package.dart';
 import 'widgets/protection.dart';
 import 'model/pill_package_model.dart';
 import 'model/settings_model.dart';
+import 'app_defaults.dart' as AppDefaults;
 
 class HomePage extends StatefulWidget {
   HomePage({Key key, this.title}) : super(key: key);
@@ -81,11 +82,13 @@ class _HomePageState extends State<HomePage> {
   _confirmNewPack()
   {
     Widget _okButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
       child: Text("Yes"),
       onPressed: () {newPackIndicator.setTrue();
       Navigator.of(context).pop();},
     );
     Widget _cancelButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
       child: Text("No"),
       onPressed: () {
         Navigator.of(context).pop();

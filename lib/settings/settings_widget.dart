@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../model/settings_model.dart';
+import '../app_defaults.dart' as AppDefaults;
 
 abstract class SettingsWidget extends StatelessWidget {
   SettingsWidget(
@@ -18,10 +19,12 @@ abstract class SettingsWidget extends StatelessWidget {
       BuildContext context, Widget inputWidget, Function onSavePressed) {
     // set up the buttons
     Widget _saveButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
       child: Text("Save"),
       onPressed: onSavePressed,
     );
     Widget _cancelButton = FlatButton(
+      textColor: AppDefaults.getPrimaryTextColor(),
       child: Text("Cancel"),
       onPressed: () {
         Navigator.of(context).pop();
