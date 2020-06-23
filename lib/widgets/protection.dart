@@ -234,11 +234,14 @@ class Protection extends StatelessWidget {
         if (_isInActiveWindowCombo()) {
           int days = COMBO_EFFECTIVE_PILLS -
               _countPerfectUseActives(COMBO_TIME_WINDOW, 0);
+
+          print("days $days");
           if (days > 1) {
             returnString = sprintf(PROTECTED_IN_X_DAYS,
                 [NumberWordsSpelling.toWord(days.toString(), "en_US")]);
+          } else if (days <= 1) {
+            returnString = PROTECTED_IN_24_HOURS;
           }
-          returnString = PROTECTED_IN_24_HOURS;
         } else {
           returnString = sprintf(PROTECTED_IN_X_DAYS, ["seven"]);
         }
@@ -265,6 +268,8 @@ class Protection extends StatelessWidget {
       case StatusInfo.protected_must_resume_combo:
         returnString = PROTECTED_NO_TIME_REMAINING;
     }
+    print("return string $returnString");
+
     return returnString ?? "";
   }
 
