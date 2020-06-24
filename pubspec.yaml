@@ -26,6 +26,7 @@ dependencies:
   sprintf: ^4.0.2
   mobx: ^0.4.0+1
   flutter_mobx: ^0.3.6
+  url_launcher: ^5.4.2
   scheduler:
     ## TODO: Make this plugin "real" after it is finalized
     path: scheduler
