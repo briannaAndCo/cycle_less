@@ -34,7 +34,7 @@ class PillPackage extends StatelessWidget {
                   crossAxisCount: 7,
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  childAspectRatio: 1,
+                  childAspectRatio: 1.2,
                   children: pillPackageModel.loadedPills == null
                       ? List<Widget>()
                       : _getPills()),
