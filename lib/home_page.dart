@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget content = new Container(
-        height: 260,
+        height: 350,
         child: Column(children: [
           Text(
             "Purpose",
@@ -169,7 +169,9 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.blue,
                     fontStyle: FontStyle.italic,
                   )),
-              onTap: _launchPrivacyURL),
+              onTap: () {
+                _launchURL('http://cycleless.net/#privacy');
+              }),
           SizedBox(height: 20),
           Text(
             "Contact Us",
@@ -188,6 +190,52 @@ class _HomePageState extends State<HomePage> {
                     fontStyle: FontStyle.italic,
                   )),
               onTap: _launchContactEmail),
+          SizedBox(height: 20),
+          Text(
+            "Additional Information",
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: AppDefaults.getPrimaryFontSize()),
+          ),
+          new InkWell(
+              child: new Text('Continuous Pill Use',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontStyle: FontStyle.italic,
+                  )),
+              onTap: () {
+                _launchURL('https://www.seattlechildrens.org/pdf/pe1332.pdf');
+              }),
+          new InkWell(
+              child: new Text('Combo Pill Information',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontStyle: FontStyle.italic,
+                  )),
+              onTap: () {
+                _launchURL(
+                    'https://www.sexwise.fpa.org.uk/resource/your-guide-combined-pill-pdf');
+              }),
+          new InkWell(
+              child: new Text('Mini-Pill Information',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontStyle: FontStyle.italic,
+                  )),
+              onTap: () {
+                _launchURL(
+                    'https://www.sexwise.fpa.org.uk/resource/your-guide-progestogen-only-pill-pdf');
+              }),
+          new InkWell(
+              child: new Text('If You Miss a Pill (Combo)',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontStyle: FontStyle.italic,
+                  )),
+              onTap: () {
+                _launchURL(
+                    'https://www.sexwise.fpa.org.uk/resource/how-many-pills-have-you-missed-pdf');
+              })
         ]));
 
     AlertDialog alert = AlertDialog(
@@ -206,8 +254,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _launchPrivacyURL() async {
-    const url = 'http://cycleless.net/#privacy';
+  _launchURL(url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -216,7 +263,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   _launchContactEmail() async {
-    const url = 'mailto:cycle.less.app@gmail.com?subject=Cycle%20Less%20Feedback';
+    const url =
+        'mailto:cycle.less.app@gmail.com?subject=Cycle%20Less%20Feedback';
     if (await canLaunch(url)) {
       await launch(url);
     } else {
