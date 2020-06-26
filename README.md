@@ -56,6 +56,7 @@ Minimal app for birth control reminder written in flutter
 - [ ] calendar visualization
   - [ ] icons
   - [ ] notes
+  - [ ] Link up pills skipped automatically with calender
   
 - [x] ability to start new pack
 - [x] ability to take break with no placebos
