@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
     );
 
     Widget content = new Container(
-        height: 350,
+        height: 400,
         child: Column(children: [
           Text(
             "Purpose",

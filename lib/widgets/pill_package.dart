@@ -91,10 +91,15 @@ class PillPackage extends StatelessWidget {
 
     List<Widget> list = List<Widget>();
 
-    DateTime dateTimeWeekday = (pillPackageModel.loadedPills != null &&
-            pillPackageModel.loadedPills.length > 0)
-        ? pillPackageModel.loadedPills.firstWhere((pill) => pill.day == 1).date
-        : DateTime.now();
+    DateTime dateTimeWeekday = DateTime.now();
+    if (pillPackageModel.loadedPills != null &&
+            pillPackageModel.loadedPills.length > 0) {
+     final firstPill = pillPackageModel.loadedPills.firstWhere((pill) => pill.day == 1, orElse: () => null);
+     if(firstPill != null)
+       {
+         dateTimeWeekday = firstPill.date;
+       }
+    }
 
     for (int i = 0; i <= 6; i++) {
       list.add(Center(
