@@ -93,7 +93,7 @@ class PillPackage extends StatelessWidget {
 
     DateTime dateTimeWeekday = (pillPackageModel.loadedPills != null &&
             pillPackageModel.loadedPills.length > 0)
-        ? pillPackageModel.loadedPills[0].date
+        ? pillPackageModel.loadedPills.firstWhere((pill) => pill.day == 1).date
         : DateTime.now();
 
     for (int i = 0; i <= 6; i++) {

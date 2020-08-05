@@ -27,11 +27,13 @@ abstract class PillPackageModelBase with Store {
   @action
   setPressedPill(PressedPill pill)
   {
-    loadedPills.insert(0, pill);
+    loadedPills.add(pill);
+    loadedPills.sort((a,b) => b.date.compareTo(a.date));
   }
 
   @action
   void setCurrentPackage(Map<int, PressedPill> currentPackage) {
     this.currentPackage = currentPackage;
   }
+
 }
